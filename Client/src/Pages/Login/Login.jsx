@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../../AppContext/AppContext";
+
 const Login = () => {
+  const navigate = useNavigate();
+
+  const { isAutorize } = useGlobalContext();
+
   const [loginState, setLoginState] = useState({
     email: "",
     password: "",
   });
 
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isAutorize) {
+      navigate("/");
+    }
+  }, [isAutorize]);
 
   const handleChange = (e) => {
     const target = e.target;
@@ -19,14 +32,24 @@ const Login = () => {
     }));
   };
 
+  axios.defaults.withCredentials = true;
   const handleSubmit = (e) => {
     e.preventDefault();
 
     axios
       .post("http://localhost:8081/login", loginState)
       .then((response) => {
-        if (response.data.Status === "Success") {
+        if (response.data.Status === "success") {
           console.log("Logged  In");
+
+          navigate("/");
+
+          setLoginState({
+            email: "",
+            password: "",
+          });
+
+          window.location.reload();
         } else {
           setError(response.data.Message);
         }
@@ -34,13 +57,6 @@ const Login = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    console.log("submit");
-
-    setLoginState({
-      email: "",
-      password: "",
-    });
   };
 
   return (

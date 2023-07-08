@@ -5,7 +5,23 @@ export const AppContext = createContext(null);
 export const AppProvider = ({ children }) => {
   const route = "http://localhost:8081";
   const [products, setProducts] = useState([]);
+  const [loggedInName, setLoggedInName] = useState("");
+  const [isAutorize, setIsAuthorize] = useState(false);
 
+  
+
+  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    axios.get("http://localhost:8081").then((response) => {
+      if (response.data.Status === "success") {
+        console.log(response);
+        setIsAuthorize(true);
+      } else {
+        setIsAuthorize(false);
+      }
+    });
+  }, []);
+  // get all products
   useEffect(() => {
     axios
       .get(`${route}/products`)
@@ -17,7 +33,19 @@ export const AppProvider = ({ children }) => {
       .catch((err) => console.log(err));
   }, []);
 
-  return <AppContext.Provider value={{ products, route }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider
+      value={{
+        products,
+        route,
+        loggedInName,
+        setLoggedInName,
+        isAutorize
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };
 
 export const useGlobalContext = () => {

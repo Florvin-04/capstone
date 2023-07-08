@@ -12,14 +12,15 @@ const Products = () => {
 
       {products.map((product) => {
         return (
-          <>
-            <p key={product.id}> {product.title}</p>
+          <div key={product.id}>
+            <h2>{product.id}</h2>
+            <p> {product.title}</p>
             <p>{product.description}</p>
             <img
               src={`${route}/uploads/${product.image}`}
               alt=""
             />
-          </>
+          </div>
         );
       })}
     </div>

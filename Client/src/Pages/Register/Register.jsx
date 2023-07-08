@@ -1,36 +1,70 @@
 import { useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { registerSchema } from "../../Validation/Validation";
+import { useGlobalContext } from "../../AppContext/AppContext";
 
-const onSubmit = async (values, actions) => {
-  console.log("Submit");
-  // console.log(values.email);
-  await new Promise((resolve) => {
-    setTimeout(resolve, 1000);
-  });
+// const onSubmit = async (values, actions) => {
 
-  axios
-    .post("http://localhost:8081/register", {
-      email: values.email,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      password: values.password,
-      // email: values.email,
-    })
-    .then((response) => {
-      if (response.data.Status === "success") {
-        console.log(response.data.Message);
-      } else {
-        console.log(response.data.Message);
-      }
-    })
-    .catch((err) => console.log(err));
+//   console.log("Submit");
+//   // console.log(values.email);
+//   await new Promise((resolve) => {
+//     setTimeout(resolve, 1000);
+//   });
 
-  actions.resetForm();
-};
+//   axios
+//     .post("http://localhost:8081/register", {
+//       email: values.email,
+//       firstName: values.firstName,
+//       lastName: values.lastName,
+//       password: values.password,
+//       // email: values.email,
+//     })
+//     .then((response) => {
+//       if (response.data.Status === "success") {
+//         console.log(response.data.Message);
+//         actions.resetForm();
+//         navigate("/login");
+//       } else {
+//         console.log(response.data.Message);
+//       }
+//     })
+//     .catch((err) => console.log(err));
+// };
 
 const Register = () => {
+  const { isAutorize } = useGlobalContext();
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (values, actions) => {
+    console.log("Submit");
+    // console.log(values.email);
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+
+    axios
+      .post("http://localhost:8081/register", {
+        email: values.email,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        password: values.password,
+        // email: values.email,
+      })
+      .then((response) => {
+        if (response.data.Status === "success") {
+          console.log(response.data.Message);
+          actions.resetForm();
+          navigate("/login");
+        } else {
+          console.log(response.data.Message);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const { values, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit } =
     useFormik({
       initialValues: {
