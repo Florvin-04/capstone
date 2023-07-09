@@ -164,6 +164,45 @@ app.get("/products", (req, res) => {
   });
 });
 
+app.get("/cart", (req, res) => {
+  const { user_id } = req.query;
+  // const user_id = req.query.user_id;
+  const sql =
+    "SELECT c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ";
+
+  db.query(sql, [user_id], (err, result) => {
+    if (err) return res.json({ Status: "error", Message: "Error in server" });
+    return res.json({ Status: "success", Message: "fetch completed", id: user_id, Result: result });
+  });
+});
+
+app.post("/add-to-cart", (req, res) => {
+  const { product_id, user_id, quantity } = req.body;
+
+  const checkQuery = "SELECT * FROM cart WHERE product_id = ? AND user_id = ?";
+
+  db.query(checkQuery, [product_id, user_id], (err, result) => {
+    if (err) return res.json({ Status: "error", Message: "Error in checking cart" });
+
+    if (result.length > 0) {
+      const updateQuery = `UPDATE cart SET quantity = ${result[0].quantity} + ${quantity} WHERE product_id = ? AND user_id = ?`;
+
+      db.query(updateQuery, [product_id, user_id, quantity], (err, result) => {
+        if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+        if (result) return res.json({ Status: "success", Message: "success updating" });
+      });
+    } else {
+      const insertQuery = "INSERT INTO cart (product_id, user_id, quantity) VALUES (?, ?, ?)";
+      db.query(insertQuery, [product_id, user_id, quantity], (err, result) => {
+        if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+        if (result) return res.json({ Status: "success", Message: "success inserting" });
+      });
+    }
+  });
+});
+
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   return res.json({ Status: "success", Message: "Logout" });

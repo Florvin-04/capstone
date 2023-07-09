@@ -3,7 +3,7 @@ import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
 
 const Header = () => {
-  const { loggedInName, setLoggedInName, isAutorize } = useGlobalContext();
+  const { loggedInName, loggedInID, isAutorize } = useGlobalContext();
   // const [isAutorize, setIsAuthorize] = useState(false);
 
   // axios.defaults.withCredentials = true;
@@ -35,7 +35,8 @@ const Header = () => {
       <div>Header</div>
       {isAutorize ? (
         <div>
-          <p>{loggedInName}</p>
+          <p>{loggedInName} {loggedInID}</p>
+
           <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (

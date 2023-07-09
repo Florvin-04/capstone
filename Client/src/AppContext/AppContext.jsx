@@ -6,6 +6,8 @@ export const AppProvider = ({ children }) => {
   const route = "http://localhost:8081";
   const [products, setProducts] = useState([]);
   const [loggedInName, setLoggedInName] = useState("");
+  const [loggedInID, setLoggedInID] = useState("");
+
   const [isAutorize, setIsAuthorize] = useState(false);
 
   
@@ -14,7 +16,9 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     axios.get("http://localhost:8081").then((response) => {
       if (response.data.Status === "success") {
-        console.log(response);
+        // console.log(response);
+        setLoggedInName(response.data.name)
+        setLoggedInID(response.data.id)
         setIsAuthorize(true);
       } else {
         setIsAuthorize(false);
@@ -39,7 +43,7 @@ export const AppProvider = ({ children }) => {
         products,
         route,
         loggedInName,
-        setLoggedInName,
+        loggedInID,
         isAutorize
       }}
     >
