@@ -168,7 +168,7 @@ app.get("/cart", (req, res) => {
   const { user_id } = req.query;
   // const user_id = req.query.user_id;
   const sql =
-    "SELECT c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ";
+    "SELECT c.id, c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ";
 
   db.query(sql, [user_id], (err, result) => {
     if (err) return res.json({ Status: "error", Message: "Error in server" });
@@ -183,15 +183,19 @@ app.post("/add-to-cart", (req, res) => {
 
   db.query(checkQuery, [product_id, user_id], (err, result) => {
     if (err) return res.json({ Status: "error", Message: "Error in checking cart" });
-
     if (result.length > 0) {
-      const updateQuery = `UPDATE cart SET quantity = ${result[0].quantity} + ${quantity} WHERE product_id = ? AND user_id = ?`;
+      // const updateQuery = `UPDATE cart SET quantity = ${result[0].quantity} + ${quantity} WHERE product_id = ? AND user_id = ?`;
+      const updateQuery = `UPDATE cart SET quantity = ? WHERE product_id = ? AND user_id = ?`;
 
-      db.query(updateQuery, [product_id, user_id, quantity], (err, result) => {
-        if (err) return res.json({ Status: "error", Message: "Error in server" });
+      db.query(
+        updateQuery,
+        [[result[0].quantity + Number(quantity)], product_id, user_id],
+        (err, result) => {
+          if (err) return res.json({ Status: "error", Message: "Error in server" });
 
-        if (result) return res.json({ Status: "success", Message: "success updating" });
-      });
+          if (result) return res.json({ Status: "success", Message: "success updating" });
+        }
+      );
     } else {
       const insertQuery = "INSERT INTO cart (product_id, user_id, quantity) VALUES (?, ?, ?)";
       db.query(insertQuery, [product_id, user_id, quantity], (err, result) => {
@@ -199,6 +203,119 @@ app.post("/add-to-cart", (req, res) => {
 
         if (result) return res.json({ Status: "success", Message: "success inserting" });
       });
+    }
+  });
+});
+
+// app.post("/update-cart", (req, res) => {
+
+//   const { cartID, quantity } = req.body;
+//   console.log(cartID, quantity);
+
+//   const updateQuery = "UPDATE `cart` SET quantity = ? WHERE id = ?";
+
+//   db.query(updateQuery, [Number(quantity), cartID], (err, result) => {
+//     if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+//     console.log(result.affectedRows);
+
+//     if (result) {
+//       return res.json({ Status: "success", Message: "success updating from cart" });
+//     } else {
+//       return res.json({ Status: "error", Message: "error updating from cart" });
+//     }
+//   });
+// });
+
+// app.post("/update-cart", (req, res) => {
+//   const { cartID, quantity } = req.body;
+
+//   const selectQuery = "SELECT * FROM `cart` WHERE id = ?";
+
+//   db.query(selectQuery, [cartID], (err, selectResult) => {
+//     if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+//     if (selectResult.length > 0) {
+//       const updateQuery = "UPDATE `cart` SET quantity = ? WHERE id = ?";
+
+//       db.query(updateQuery, [Number(quantity), cartID], (err, result) => {
+//         if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+//         console.log(selectResult);
+//       })
+//     }
+//   });
+
+//   // db.query(updateQuery, [Number(quantity), cartID], (err, updateResult) => {
+//   //   if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+//   //   db.query(selectQuery, [cartID], (err, selectResult) => {
+//   //     if (err) return res.json({ Status: "error", Message: "Error in server" });
+
+//   //     if (updateResult.affectedRows > 0 && selectResult.length > 0) {
+//   //       const updatedCart = selectResult[0];
+//   //       return res.json({
+//   //         Status: "success",
+//   //         Message: "Successfully updated cart",
+//   //         Cart: updatedCart,
+//   //       });
+//   //     } else {
+//   //       return res.json({ Status: "error", Message: "Failed to update cart" });
+//   //     }
+//   //   });
+//   // });
+// });
+
+app.post("/update-cart", (req, res) => {
+  const { cartID, quantity, action } = req.body;
+
+  const selectQuery = "SELECT * FROM cart WHERE id = ?";
+
+  db.query(selectQuery, [cartID], (err, selectResult) => {
+    if (err) {
+      console.error("Error retrieving cart:", err);
+      return res.json({ Status: "error", Message: "Error in server" });
+    }
+
+    if (selectResult.length > 0) {
+      let updatedQuantity;
+      const currentQuantity = selectResult[0].quantity;
+
+      if (action === "update") {
+        updatedQuantity = Number(quantity);
+      } else if (action === "add") {
+        updatedQuantity = currentQuantity + 1;
+      } else if (action === "subtract") {
+        updatedQuantity = currentQuantity - 1;
+      } else {
+        return res.json({ Status: "error", Message: "Invalid action" });
+      }
+
+      const updateQuery = "UPDATE cart SET quantity = ? WHERE id = ?";
+      const values = [updatedQuantity, cartID];
+
+      db.query(updateQuery, values, (err, updateResult) => {
+        if (err) {
+          console.error("Error updating cart:", err);
+          return res.json({ Status: "error", Message: "Error in server" });
+        }
+
+        if (updateResult.affectedRows > 0) {
+          const updatedCart = {
+            ...selectResult[0],
+            quantity: updatedQuantity,
+          };
+          return res.json({
+            Status: "success",
+            Message: "Successfully updated cart",
+            cart: updatedCart,
+          });
+        } else {
+          return res.json({ Status: "error", Message: "Failed to update cart" });
+        }
+      });
+    } else {
+      return res.json({ Status: "error", Message: "Cart not found" });
     }
   });
 });

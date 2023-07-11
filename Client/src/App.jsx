@@ -13,7 +13,7 @@ import { Cart } from "./Pages/Cart/Cart";
 
 function App() {
   return (
-    <>
+    <div className="container">
       <Routes>
         <Route
           path="/"
@@ -48,7 +48,7 @@ function App() {
           element={<Register />}
         />
       </Routes>
-    </>
+    </div>
   );
 }
 

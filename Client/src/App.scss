@@ -53,6 +53,11 @@
 //   color: #888;
 // }
 
-body{
+body {
   background-color: rgb(255, 236, 236);
+}
+
+.container {
+  width: min(1200px, 95%);
+  margin-inline: auto;
 }
