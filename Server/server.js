@@ -10,7 +10,7 @@ const app = express();
 app.use(
   cors({
     origin: ["http://localhost:5173"],
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "DELETE"],
     credentials: true,
   })
 );
@@ -168,7 +168,7 @@ app.get("/cart", (req, res) => {
   const { user_id } = req.query;
   // const user_id = req.query.user_id;
   const sql =
-    "SELECT c.id, c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ";
+    "SELECT c.id, added_at, c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ORDER BY `c`.`added_at` DESC";
 
   db.query(sql, [user_id], (err, result) => {
     if (err) return res.json({ Status: "error", Message: "Error in server" });
@@ -206,65 +206,6 @@ app.post("/add-to-cart", (req, res) => {
     }
   });
 });
-
-// app.post("/update-cart", (req, res) => {
-
-//   const { cartID, quantity } = req.body;
-//   console.log(cartID, quantity);
-
-//   const updateQuery = "UPDATE `cart` SET quantity = ? WHERE id = ?";
-
-//   db.query(updateQuery, [Number(quantity), cartID], (err, result) => {
-//     if (err) return res.json({ Status: "error", Message: "Error in server" });
-
-//     console.log(result.affectedRows);
-
-//     if (result) {
-//       return res.json({ Status: "success", Message: "success updating from cart" });
-//     } else {
-//       return res.json({ Status: "error", Message: "error updating from cart" });
-//     }
-//   });
-// });
-
-// app.post("/update-cart", (req, res) => {
-//   const { cartID, quantity } = req.body;
-
-//   const selectQuery = "SELECT * FROM `cart` WHERE id = ?";
-
-//   db.query(selectQuery, [cartID], (err, selectResult) => {
-//     if (err) return res.json({ Status: "error", Message: "Error in server" });
-
-//     if (selectResult.length > 0) {
-//       const updateQuery = "UPDATE `cart` SET quantity = ? WHERE id = ?";
-
-//       db.query(updateQuery, [Number(quantity), cartID], (err, result) => {
-//         if (err) return res.json({ Status: "error", Message: "Error in server" });
-
-//         console.log(selectResult);
-//       })
-//     }
-//   });
-
-//   // db.query(updateQuery, [Number(quantity), cartID], (err, updateResult) => {
-//   //   if (err) return res.json({ Status: "error", Message: "Error in server" });
-
-//   //   db.query(selectQuery, [cartID], (err, selectResult) => {
-//   //     if (err) return res.json({ Status: "error", Message: "Error in server" });
-
-//   //     if (updateResult.affectedRows > 0 && selectResult.length > 0) {
-//   //       const updatedCart = selectResult[0];
-//   //       return res.json({
-//   //         Status: "success",
-//   //         Message: "Successfully updated cart",
-//   //         Cart: updatedCart,
-//   //       });
-//   //     } else {
-//   //       return res.json({ Status: "error", Message: "Failed to update cart" });
-//   //     }
-//   //   });
-//   // });
-// });
 
 app.post("/update-cart", (req, res) => {
   const { cartID, quantity, action } = req.body;
@@ -304,6 +245,7 @@ app.post("/update-cart", (req, res) => {
           const updatedCart = {
             ...selectResult[0],
             quantity: updatedQuantity,
+            action,
           };
           return res.json({
             Status: "success",
@@ -316,6 +258,22 @@ app.post("/update-cart", (req, res) => {
       });
     } else {
       return res.json({ Status: "error", Message: "Cart not found" });
+    }
+  });
+});
+
+app.delete("/remove-item-to-cart", (req, res) => {
+  const { productID } = req.body;
+
+  const deleteQuery = "DELETE FROM `cart` WHERE id = ?";
+
+  db.query(deleteQuery, [productID], (err, result) => {
+    if (err) return res.json({ Status: "Error", Message: "Error in server" });
+
+    if (result) {
+      return res.json({ Status: "Success", Message: "Deleted Successfully" });
+    } else {
+      return res.json({ Status: "Error", Message: "Error from deleting" });
     }
   });
 });

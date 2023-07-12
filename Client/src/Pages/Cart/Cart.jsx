@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import axios from "axios";
 import { useGlobalContext } from "../../AppContext/AppContext";
@@ -10,6 +10,7 @@ export const Cart = () => {
   const [cartData, setCartData] = useState([]);
 
   const [loading, setLoading] = useState(true);
+
 
   // function getTotal(){
 
@@ -37,9 +38,7 @@ export const Cart = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, [loggedInID]);
-
- 
+  }, [loading, loggedInID]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -48,11 +47,14 @@ export const Cart = () => {
   return (
     <>
       <div>Cart</div>
+     
       {cartData.map((product) => {
         return (
           <CartProduct
             key={product.product_id}
-            {...product}
+            // {...product}
+            product={product}
+            setLoadingCart={setLoading}
           />
         );
       })}
