@@ -5,12 +5,11 @@ import { useGlobalContext } from "../../AppContext/AppContext";
 import { CartProduct } from "../../Components/CartProduct/CartProduct";
 
 export const Cart = () => {
-  const { route, loggedInID } = useGlobalContext();
+  const { route, loggedInID, setFormState, getTotal } = useGlobalContext();
 
   const [cartData, setCartData] = useState([]);
 
   const [loading, setLoading] = useState(true);
-
 
   // function getTotal(){
 
@@ -47,7 +46,6 @@ export const Cart = () => {
   return (
     <>
       <div>Cart</div>
-     
       {cartData.map((product) => {
         return (
           <CartProduct
@@ -58,6 +56,7 @@ export const Cart = () => {
           />
         );
       })}
+      <p>{getTotal().toLocaleString()}</p>
     </>
   );
 };

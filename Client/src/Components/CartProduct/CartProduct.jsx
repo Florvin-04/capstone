@@ -1,26 +1,25 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import "./CartProduct.scss";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
 
 export const CartProduct = ({ product, setLoadingCart }) => {
-  const { route, loggedInID } = useGlobalContext();
+  const { route, loggedInID, setFormState, formState, setTotal } = useGlobalContext();
 
-  const [loading, seLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   // const [formState, setFormState] = useState(product.quantity);
 
-  const [formState, setFormState] = useState({
-    checkout_cart: [],
-    quantity: product.quantity,
-  });
-
+  const [inputValue, setInputValue] = useState(product.quantity);
   const [updatedQuantity, setUpdatedQuantity] = useState(product.quantity);
+  const [subtotal, setSubtotal] = useState(0);
   const modalRef = useRef();
 
   function handleChange(e, id = null) {
     const target = e.target;
     const { value, type, checked } = target;
-    const { checkout_cart } = formState;
+    const { checkout_cart, subtotals } = formState;
+
+    // console.log(quantity);
 
     if (value < 0 || (isNaN(value) && type !== "checkbox") || value > 100) {
       return;
@@ -31,12 +30,41 @@ export const CartProduct = ({ product, setLoadingCart }) => {
         ? [...checkout_cart, id]
         : checkout_cart.filter((ids) => ids !== id);
 
+    const updateSubtotal =
+      checked && type == "checkbox"
+        ? [...subtotals, subtotal]
+        : subtotals.filter((ids) => ids !== subtotal);
+
+    // TODO, UPDATE GET TOTAL
     setFormState((prevData) => ({
       ...prevData,
       checkout_cart: updateCart,
-      ...(type !== "checkbox" && { quantity: value }),
+      checkout_carts: { id: updateCart, subtotal: updateSubtotal },
+      subtotals: updateSubtotal,
     }));
+
+    if (type !== "checkbox") {
+      setInputValue(value);
+    }
   }
+
+  useEffect(() => {
+    const updatedSubtotal = product.price * updatedQuantity;
+    setSubtotal(updatedSubtotal);
+
+    // setFormState((prevData) => ({
+    //   ...prevData,
+    //   subtotals: [...formState.subtotals, updatedSubtotal],
+    // }));
+  }, [loading]);
+
+  // useEffect(() => {
+  //   // setTrial((prev) => prev.filter((ids) => ids.id != 4));
+  //   // const a = trial.map(try => try.id === 1);
+  //   // console.log(trial.includes(trial.map((item) => item.id == 1)));
+  //   // console.log(trial.id == 1);
+  //   console.log(trial.some((item) => item.id == 4));
+  // }, []);
 
   // function handleChange(e, id = null) {
   //   const target = e.target;
@@ -68,30 +96,27 @@ export const CartProduct = ({ product, setLoadingCart }) => {
   function handleSubmit(e, action = "update", id) {
     e.preventDefault();
     if (
-      formState.quantity == "" ||
-      formState.quantity == 0 ||
-      (formState.quantity == updatedQuantity && action == "update")
+      inputValue == "" ||
+      inputValue == 0 ||
+      (inputValue == updatedQuantity && action == "update")
     ) {
-      setFormState((prevData) => ({
-        ...prevData,
-        quantity: updatedQuantity,
-      }));
+      setInputValue(updatedQuantity);
       return;
     }
 
-    if (formState.quantity == 1 && action == "subtract") {
+    if (inputValue == 1 && action == "subtract") {
       console.log("delete", id);
       document.body.classList.add("modal-open");
       modalRef.current.showModal(id);
       return;
     }
 
-    seLoading(true);
+    setLoading(true);
 
     axios
       .post(`${route}/update-cart`, {
         cartID: product.id,
-        quantity: formState.quantity,
+        quantity: inputValue,
         action,
       })
       .then((response) => {
@@ -100,20 +125,19 @@ export const CartProduct = ({ product, setLoadingCart }) => {
           //   console.log(response.data.cart.quantity);
 
           setTimeout(() => {
-            seLoading(false);
+            setLoading(false);
 
             if (response.data.cart.action == "add") {
-              setFormState((prevData) => ({
-                ...prevData,
-                quantity: Number(prevData.quantity) + 1,
-              }));
+              setInputValue((prevData) => Number(prevData) + 1);
             }
 
             if (response.data.cart.action == "subtract") {
-              setFormState((prevData) => ({
-                ...prevData,
-                quantity: Number(prevData.quantity) - 1,
-              }));
+              setInputValue((prevData) => Number(prevData) - 1);
+
+              // setInputValue((prevData) => ({
+              //   ...prevData,
+              //   quantity: Number(prevData.quantity) - 1,
+              // }));
             }
 
             setUpdatedQuantity(response.data.cart.quantity);
@@ -179,7 +203,10 @@ export const CartProduct = ({ product, setLoadingCart }) => {
         name="checkout_cart"
         id={product.id}
         checked={formState.checkout_cart.includes(product.id)}
-        onChange={(e) => handleChange(e, product.id)}
+        onChange={(e) => {
+          handleChange(e, product.id);
+          // getsubtotal(product.id, subtotal);
+        }}
       />
 
       <label
@@ -209,7 +236,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
                   type="text"
                   name="updateCart"
                   id="updateCart"
-                  value={formState.quantity}
+                  value={inputValue}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   disabled={loading}
@@ -238,9 +265,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
           </div>
         </div>
 
-        <p className="cartSubtotal">
-          Subtotal: ₱{(product.price * updatedQuantity).toLocaleString()}
-        </p>
+        <p className="cartSubtotal">Subtotal: ₱{subtotal.toLocaleString()}</p>
       </label>
     </>
   );
