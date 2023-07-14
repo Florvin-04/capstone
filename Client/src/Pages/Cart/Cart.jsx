@@ -1,43 +1,39 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import { CartProduct } from "../../Components/CartProduct/CartProduct";
 
-export const Cart = () => {
-  const { route, loggedInID, setFormState, getTotal } = useGlobalContext();
-
-  const [cartData, setCartData] = useState([]);
+const Cart = () => {
+  const { route, loggedInID, formState, getTotal, cartData, setCartData } = useGlobalContext();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [loading, setLoading] = useState(true);
 
-  // function getTotal(){
-
-  //   cartData.forEach((data) => {
-  //     console.log(data);
-  //   });
-  // }
   // useEffect(() => {
-  // }, [loggedInID]);
+  //   setLoading(false);
+  // }, []);
+  const fetchCartData = async () => {
+    try {
+      const response = await axios.get(`${route}/cart`, {
+        params: { user_id: loggedInID },
+      });
+
+      if (response.data.Status === "success") {
+        setCartData(response.data.Result);
+        setLoading(false);
+      } else {
+        console.log(response.data.Message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    // setLoading(true);
-    axios
-      .get(`${route}/cart`, {
-        params: { user_id: loggedInID },
-      })
-      .then((response) => {
-        if (response.data.Status === "success") {
-          // setCartData(response.data.Result);
-          setLoading(false);
-          console.log(response);
-          setCartData(response.data.Result);
-        } else {
-          console.log(response.data.Message);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, [loading, loggedInID]);
+    fetchCartData();
+  }, [loggedInID, loading]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -56,7 +52,16 @@ export const Cart = () => {
           />
         );
       })}
-      <p>{getTotal().toLocaleString()}</p>
+      <p>{getTotal()}</p>
+      <button
+        onClick={() => {
+          navigate("/checkout");
+        }}
+      >
+        Checkout
+      </button>
     </>
   );
 };
+
+export default Cart;

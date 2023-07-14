@@ -9,7 +9,8 @@ import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
 import DetailedProduct from "./Pages/DetailedProduct/DetailedProduct";
-import { Cart } from "./Pages/Cart/Cart";
+import Cart from "./Pages/Cart/Cart";
+import Checkout from "./Pages/Checkout/Checkout";
 
 function App() {
   return (
@@ -36,6 +37,11 @@ function App() {
           <Route
             path="/cart"
             element={<Cart />}
+          />
+
+          <Route
+            path="/checkout"
+            element={<Checkout />}
           />
         </Route>
 

@@ -5,11 +5,18 @@
 
   .cartProduct__container--description {
     display: flex;
-
+    // align-items: center;
     gap: 1em;
 
     img {
       width: 100px;
+    }
+
+    > div{
+      height: 100%;
+      display: grid;
+      gap: 1.5em;
+      // background-color: red;
     }
 
     .cartProduct__name--container {
