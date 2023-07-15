@@ -24,7 +24,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
 
     const updateCart =
       checked && type == "checkbox"
-        ? [...checkout_cart, { id: id, subtotal: subtotal, quantity: updatedQuantity }]
+        ? [...checkout_cart, { id: id, subtotal: subtotal }]
         : checkout_cart.filter((item) => item.id != id);
 
     // const updateSubtotal =

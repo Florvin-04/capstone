@@ -1,0 +1,33 @@
+.addNewAddress {
+  //
+  > div {
+    + div {
+      margin-top: 1.1rem;
+    }
+    //   outline: 1px solid red;
+    .input-field {
+      position: relative;
+
+      > *:not(span) {
+        width: 100%;
+        padding-top: 0.3em;
+        &:focus ~ span,
+        &:not(:placeholder-shown) ~ span {
+          font-size: 0.85rem;
+          top: 0%;
+          // transform: translate(0%, -150%);
+          background-color: white;
+        }
+      }
+      > span {
+        pointer-events: none;
+        padding-inline: 0.5em;
+        position: absolute;
+        top: 50%;
+        left: 4%;
+        transform: translate(0%, -50%);
+        transition: 0.1s ease;
+      }
+    }
+  }
+}

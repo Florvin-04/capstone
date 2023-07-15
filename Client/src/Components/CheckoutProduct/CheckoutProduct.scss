@@ -1,0 +1,43 @@
+.checkoutCard {
+  outline: 1px solid red;
+  display: flex;
+  gap: 1rem;
+  .checkoutCard__description {
+    // display: flex;
+    //   outline: 1px solid red;
+    width: 100%;
+
+    > div {
+      margin-top: 1rem;
+      outline: 2px solid red;
+      display: flex;
+      align-items: center;
+
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      > div {
+        display: flex;
+        justify-content: space-between;
+        // gap: 1em;
+        outline: 2px solid red;
+        flex-basis: 200px;
+      }
+
+      .checkoutCard__description--title {
+        font-size: 1.2rem;
+        width: min(300px, 100%);
+        overflow: hidden;
+
+        max-height: 3.5rem;
+
+        text-overflow: ellipsis;
+        word-break: word;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+    }
+  }
+}

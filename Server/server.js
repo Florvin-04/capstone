@@ -40,14 +40,21 @@ const verifyUser = (req, res, next) => {
   jwt.verify(token, "jwt-sample-secret-key", (err, decoded) => {
     if (err) return res.json({ Status: "error", Message: "Token Error" });
 
-    req.name = decoded.name;
+    req.first_name = decoded.first_name;
+    req.last_name = decoded.last_name;
     req.id = decoded.id;
     next();
   });
 };
 
 app.get("/", verifyUser, (req, res) => {
-  return res.json({ Status: "success", Message: "Authorized", name: req.name, id: req.id });
+  return res.json({
+    Status: "success",
+    Message: "Authorized",
+    first_name: req.first_name,
+    last_name: req.last_name,
+    id: req.id,
+  });
 });
 
 app.post("/register", (req, res) => {
@@ -118,9 +125,12 @@ app.post("/login", (req, res) => {
         if (err) return res.json({ Status: "error", Message: "error in server" });
 
         if (response) {
-          const name = result[0].first_name;
+          const first_name = result[0].first_name;
+          const last_name = result[0].last_name;
           const id = result[0].id;
-          const token = jwt.sign({ name, id }, "jwt-sample-secret-key", { expiresIn: "1d" });
+          const token = jwt.sign({ first_name, last_name, id }, "jwt-sample-secret-key", {
+            expiresIn: "1d",
+          });
           res.cookie("token", token, {
             sameSite: "None",
             secure: true, // Make sure to set secure to true if using HTTPS
@@ -274,6 +284,60 @@ app.delete("/remove-item-to-cart", (req, res) => {
       return res.json({ Status: "Success", Message: "Deleted Successfully" });
     } else {
       return res.json({ Status: "Error", Message: "Error from deleting" });
+    }
+  });
+});
+
+app.get("/user-address", (req, res) => {
+  const { user_id } = req.query;
+
+  const selectQuery =
+    "SELECT address, contact_person, zip_code, phone_number FROM users_address WHERE user_id = ?";
+
+  db.query(selectQuery, [user_id], (err, result) => {
+    if (err) res.json({ Status: "error", Message: "Error in fetching from database" });
+
+    return res.json({ Status: "success", Message: "fetch complete", Result: result });
+  });
+});
+
+app.get("/user-delivery-address", (req, res) => {
+  const { user_id } = req.query;
+
+  const selectQuery =
+    "SELECT phone_number, zip_code, deliveryAddress, contact_person FROM delivery_address WHERE user_id = ?";
+
+  db.query(selectQuery, [user_id], (err, result) => {
+    if (err) {
+      return res.json({ Status: "error", Message: "Error in fetching from database" });
+    }
+
+    return res.json({
+      Status: "success",
+      Message: "fetch complete",
+      Result: result[0],
+      // Address: result[0]?.deliveryAddress,
+      // ContactPerson: result[0]?.contact_person,
+    });
+  });
+});
+
+app.post("/update-delivery-address", (req, res) => {
+  const { user_id, new_delivery_address } = req.body;
+
+  const deliver_info = new_delivery_address.split(",");
+  const [address, phoneNumber, zipCode, contactPerson] = deliver_info;
+
+  const values = [address, zipCode, contactPerson, phoneNumber, user_id];
+
+  const updateQuery =
+    "UPDATE delivery_address SET deliveryAddress = ?, zip_code = ?, contact_person = ?, phone_number = ? WHERE user_id = ?";
+
+  db.query(updateQuery, values, (err, result) => {
+    if (err) return res.json({ Status: "error", Message: "Error in updating database" });
+
+    if (result) {
+      return res.json({ Status: "success", Message: "Success Updating" });
     }
   });
 });

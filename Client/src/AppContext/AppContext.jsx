@@ -10,8 +10,12 @@ export const AppProvider = ({ children }) => {
   const route = "http://localhost:8081";
   const [products, setProducts] = useState([]);
   const [cartData, setCartData] = useState([]);
+  const [addresses, setAddresses] = useState([]);
 
-  const [loggedInName, setLoggedInName] = useState("");
+  const [loggedInName, setLoggedInName] = useState({
+    first_name: "",
+    last_name: "",
+  });
   const [loggedInID, setLoggedInID] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -33,6 +37,8 @@ export const AppProvider = ({ children }) => {
       .then((res) => {
         if (res.data.Status === "Success") {
           setProducts(res.data.Result);
+        } else {
+          console.log(res.data.Message);
         }
       })
       .catch((err) => console.log(err));
@@ -41,9 +47,12 @@ export const AppProvider = ({ children }) => {
 
     axios.get("http://localhost:8081").then((response) => {
       if (response.data.Status === "success") {
-        // console.log(response);
-
-        setLoggedInName(response.data.name);
+        // console.log(response.data);
+        setLoggedInName((prevData) => ({
+          ...prevData,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+        }));
         setLoggedInID(response.data.id);
         setIsAuthorize(true);
       } else {
@@ -52,29 +61,23 @@ export const AppProvider = ({ children }) => {
     });
   }, []);
 
-  // const fetchCartData = async (id) => {
-  //   try {
-  //     const response = await axios.get(`${route}/cart`, {
-  //       params: { user_id: id },
-  //     });
+  async function getAddress() {
+    console.log("get");
+    try {
+      const response = await axios.get(`${route}/user-address`, {
+        params: { user_id: loggedInID },
+      });
 
-  //     if (response.data.Status === "success") {
-  //       setCartData(response.data.Result);
-  //       setLoading(false);
-  //     } else {
-  //       console.log(response.data.Message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (location.pathname === "/cart") {
-  //     console.log(location);
-  //     fetchCartData(loggedInID);
-  //   }
-  // }, [loggedInID, loading, location]);
+      if (response.data.Status === "success") {
+        console.log(response);
+        setAddresses(response.data.Result);
+      } else {
+        console.log(response.data.Message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   function getTotal() {
     let total = 0;
@@ -101,6 +104,9 @@ export const AppProvider = ({ children }) => {
         setLoading,
         cartData,
         setCartData,
+        getAddress,
+        addresses,
+        setAddresses,
       }}
     >
       {children}

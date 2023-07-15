@@ -12,10 +12,12 @@
       width: 100px;
     }
 
-    > div{
+    > div {
       height: 100%;
       display: grid;
       gap: 1.5em;
+      outline: 2px solid red;
+      width: 100%;
       // background-color: red;
     }
 
@@ -39,8 +41,7 @@
         font-size: 1.2rem;
         width: min(200px, 100%);
         overflow: hidden;
-        // text-decoration: none;
-        // color: rgba(0, 0, 0, 0.87);
+
         max-height: 3.5rem;
         display: block;
 

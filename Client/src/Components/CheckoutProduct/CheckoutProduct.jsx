@@ -1,4 +1,5 @@
 import React from "react";
+import "./CheckoutProduct.scss";
 import { useGlobalContext } from "../../AppContext/AppContext";
 
 const CheckoutProduct = ({ product, chekedProduct }) => {
@@ -16,18 +17,18 @@ const CheckoutProduct = ({ product, chekedProduct }) => {
           <p className="checkoutCard__description--category">{product.category}</p>
           <div>
             <p className="checkoutCard__description--title">{product.title}</p>
-            <p className="checkoutCard__description--price">₱{product.price}</p>
-            <p className="checkoutCard__description--quantity">
-              x{chekedProduct.items[product.id].quantity}
-            </p>
+            <div>
+              <p className="checkoutCard__description--price">₱{product.price.toLocaleString()}</p>
+              <p className="checkoutCard__description--quantity">x{product.quantity}</p>
+              <p className="checkoutCard__description--price">
+                ₱{chekedProduct.items[product.id].subtotal.toLocaleString()}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <p>
-        {product.id} {chekedProduct.items[product.id].quantity}{" "}
-        {chekedProduct.items[product.id].subtotal}
-      </p>
+      <p></p>
     </>
   );
 };
