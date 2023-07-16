@@ -4,7 +4,14 @@ import axios from "axios";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import CheckoutProduct from "../../Components/CheckoutProduct/CheckoutProduct";
 import Address from "../../Components/Address/Address";
-import AddNewAddress from "../../Components/AddNewAddress/AddNewAddress";
+import AddUpdateAddress from "../../Components/AddNewAddress/AddUpdateAddress";
+
+const initialAddressValues = {
+  address: "",
+  contactPerson: "",
+  phoneNumber: "",
+  zipCode: "",
+};
 
 const Checkout = () => {
   const {
@@ -24,19 +31,17 @@ const Checkout = () => {
   });
   const [chosenAddress, setChosenAddress] = useState("");
   const [currentAddress, setCurrentAddress] = useState({
-    address: "",
-    contactPerson: "",
-    phoneNumber: "",
-    zipCode: "",
+    ...initialAddressValues,
   });
+  const [editAddress, setEditAddress] = useState({});
   const [checkoutData, setCheckoutData] = useState([]);
   const [forms, setForms] = useState("chooseAddress");
   const modalRef = useRef();
-
-  const fetchDeliveryAddress = async () => {
+  const displayDeliveryAddress = async () => {
     try {
-      const response = await axios.get(`${route}/user-delivery-address`, {
-        params: { user_id: loggedInID },
+      const response = await axios.post(`${route}/user-delivery-address`, {
+        user_id: loggedInID,
+        delivery_address: chosenAddress,
       });
 
       if (response.data.Status === "success") {
@@ -74,7 +79,7 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    fetchDeliveryAddress();
+    displayDeliveryAddress();
     fetchCartData();
   }, [loggedInID]);
 
@@ -98,20 +103,20 @@ const Checkout = () => {
 
   async function handleSubmitAddressForm(e) {
     e.preventDefault();
-    if (forms === "chooseAddress") {
-      await updateDeliveryAddress();
-      fetchDeliveryAddress();
+
+    if (chosenAddress === "") {
+      return;
     }
 
-    if (forms === "newAddress") {
-      console.log("submit new");
-    }
+    await updateDeliveryAddress();
+    displayDeliveryAddress();
+    modalRef.current.close();
     // setCurrentAddress(chosenAddress);
   }
 
   const updateDeliveryAddress = async () => {
     try {
-      const response = await axios.post(`${route}/update-delivery-address`, {
+      const response = await axios.put(`${route}/update-delivery-address`, {
         user_id: loggedInID,
         new_delivery_address: chosenAddress,
       });
@@ -126,6 +131,8 @@ const Checkout = () => {
     }
   };
 
+  const hasUndefinedValue = Object.values(currentAddress).some((value) => value === undefined);
+  console.log(hasUndefinedValue);
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -148,6 +155,8 @@ const Checkout = () => {
                     idx={idx}
                     handleChangeAddress={handleChangeAddress}
                     chosenAddress={chosenAddress}
+                    setForms={setForms}
+                    setEditAddress={setEditAddress}
                   />
                 );
               })}
@@ -162,7 +171,6 @@ const Checkout = () => {
                   type="sbmit"
                   onClick={() => {
                     document.body.classList.remove("modal-open");
-                    modalRef.current.close();
                   }}
                 >
                   Submit
@@ -182,13 +190,18 @@ const Checkout = () => {
           )}
         </form>
 
-        {forms === "newAddress" && <AddNewAddress setForms={setForms} />}
+        {(forms === "newAddress" || forms === "editAddress") && (
+          <AddUpdateAddress
+            setForms={setForms}
+            forms={forms}
+            editAddress={editAddress}
+          />
+        )}
       </dialog>
 
       <section className="checkout__section">
         Checkout Page
-        <div className="shippingAddress">
-          <h2>Shipping Address</h2>
+        {hasUndefinedValue && (
           <button
             onClick={() => {
               getAddress();
@@ -198,15 +211,29 @@ const Checkout = () => {
           >
             address
           </button>
-          <div className="shippingAddress__information">
-            <p>
-              Contact Person: {currentAddress.contactPerson} | {currentAddress.phoneNumber}
-            </p>
-            <p>
-              Addess {currentAddress.address} | {currentAddress.zipCode}
-            </p>
+        )}
+        {!hasUndefinedValue && (
+          <div className="shippingAddress">
+            <h2>Shipping Address</h2>
+            <button
+              onClick={() => {
+                getAddress();
+                document.body.classList.add("modal-open");
+                modalRef.current.showModal();
+              }}
+            >
+              address
+            </button>
+            <div className="shippingAddress__information">
+              <p>
+                Contact Person: {currentAddress.contactPerson} | {currentAddress.phoneNumber}
+              </p>
+              <p>
+                Addess {currentAddress.address} | {currentAddress.zipCode}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
         {checkoutData.map((product) => {
           if (chekedProduct.ids.includes(product.id)) {
             return (

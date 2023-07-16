@@ -1,19 +1,61 @@
 import React from "react";
-import "./AddNewAddress.scss";
+import "./AddUpdateAddress.scss";
+import axios from "axios";
 import { useFormik } from "formik";
 import { addressFormSchema } from "../../Validation/Validation";
+import { useGlobalContext } from "../../AppContext/AppContext";
 
-const onSubmit = () => {
-  console.log("submit");
-};
+async function add_address(values, route, userID, forms, addressID) {
+  const { completeAddress, fullName, zipCode, phoneNumber } = values;
 
-function AddNewAddress({ setForms }) {
+  try {
+    const response = await axios.post(`${route}/add-update-address`, {
+      userID: userID,
+      address: completeAddress,
+      zipCode,
+      phoneNumber,
+      contactPerson: fullName,
+      formState: { status: forms, id: addressID },
+    });
+
+    if (response.status === "success") {
+      console.log(response);
+      return;
+    } else {
+      console.log(response.data.Message);
+      return;
+    }
+  } catch (error) {
+    console.log("catch error: ", error);
+  }
+}
+
+function AddUpdateAddress({ setForms, forms, editAddress }) {
+  const { loggedInID, route, getAddress } = useGlobalContext();
+
+  console.log(forms);
+
+  let initial_values = {
+    fullName: forms === "newAddress" ? "" : editAddress.fullName,
+    completeAddress: forms === "newAddress" ? "" : editAddress.completeAddress,
+    zipCode: forms === "newAddress" ? "" : editAddress.zipCode,
+    phoneNumber: forms === "newAddress" ? "" : editAddress.phoneNumber,
+  };
+
+  const onSubmit = async (values) => {
+    try {
+      await add_address(values, route, loggedInID, forms, editAddress.id);
+      await getAddress();
+      setForms("chooseAddress");
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   const { values, errors, touched, handleChange, handleSubmit } = useFormik({
     initialValues: {
-      fullName: "",
-      completeAddress: "",
-      zipCode: "",
-      phoneNumber: ""
+      ...initial_values,
     },
 
     validationSchema: addressFormSchema,
@@ -25,6 +67,7 @@ function AddNewAddress({ setForms }) {
   return (
     <>
       <form
+        autoComplete="off"
         className="addNewAddress"
         onSubmit={handleSubmit}
       >
@@ -99,4 +142,4 @@ function AddNewAddress({ setForms }) {
   );
 }
 
-export default AddNewAddress;
+export default AddUpdateAddress;

@@ -10,7 +10,7 @@ const app = express();
 app.use(
   cors({
     origin: ["http://localhost:5173"],
-    methods: ["POST", "GET", "DELETE"],
+    methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true,
   })
 );
@@ -292,7 +292,7 @@ app.get("/user-address", (req, res) => {
   const { user_id } = req.query;
 
   const selectQuery =
-    "SELECT address, contact_person, zip_code, phone_number FROM users_address WHERE user_id = ?";
+    "SELECT id, address, contact_person, zip_code, phone_number FROM users_address WHERE user_id = ?";
 
   db.query(selectQuery, [user_id], (err, result) => {
     if (err) res.json({ Status: "error", Message: "Error in fetching from database" });
@@ -301,8 +301,10 @@ app.get("/user-address", (req, res) => {
   });
 });
 
-app.get("/user-delivery-address", (req, res) => {
-  const { user_id } = req.query;
+// TODO
+
+app.post("/user-delivery-address", (req, res) => {
+  const { user_id, delivery_address } = req.body;
 
   const selectQuery =
     "SELECT phone_number, zip_code, deliveryAddress, contact_person FROM delivery_address WHERE user_id = ?";
@@ -312,17 +314,76 @@ app.get("/user-delivery-address", (req, res) => {
       return res.json({ Status: "error", Message: "Error in fetching from database" });
     }
 
-    return res.json({
-      Status: "success",
-      Message: "fetch complete",
-      Result: result[0],
-      // Address: result[0]?.deliveryAddress,
-      // ContactPerson: result[0]?.contact_person,
-    });
+    console.log(user_id);
+    if (result.length === 0) {
+      console.log(delivery_address);
+      const [address, phoneNumber, zipCode, contactPerson] = delivery_address;
+      const values = [address, zipCode, contactPerson, phoneNumber, user_id];
+
+      const insertQuery =
+        "INSERT INTO delivery_address(user_id, deliveryAddress, zip_code, contact_person, phone_number) VALUES (?)";
+
+      db.query(insertQuery, [values], (err, result) => {
+        if (err) return res.json({ Status: "error", Message: "Error in inserting from database" });
+
+        return res.json({
+          Status: "success",
+          Message: "insert complete",
+          Result: result,
+          // Address: result[0]?.deliveryAddress,
+          // ContactPerson: result[0]?.contact_person,
+        });
+      });
+    } else {
+      return res.json({
+        Status: "success",
+        Message: "fetch complete",
+        Result: result[0],
+        // Address: result[0]?.deliveryAddress,
+        // ContactPerson: result[0]?.contact_person,
+      });
+    }
   });
 });
 
-app.post("/update-delivery-address", (req, res) => {
+app.post("/add-update-address", (req, res) => {
+  const { userID, contactPerson, zipCode, phoneNumber, address, formState } = req.body;
+  const insertValues = [userID, address, zipCode, phoneNumber, contactPerson];
+  const updateValues = [address, zipCode, phoneNumber, contactPerson, formState.id];
+
+  if (formState.status === "newAddress") {
+    const selectQuery = "SELECT * FROM users_address WHERE user_id = ?";
+
+    db.query(selectQuery, [userID], (err, result) => {
+      if (err) return res.json({ Status: "error", Message: "fetching error in database" });
+      if (result.length < 5) {
+        const insertQuery =
+          "INSERT INTO users_address(user_id, address, zip_code, phone_number, contact_person) VALUES (?)";
+
+        db.query(insertQuery, [insertValues], (err, result) => {
+          if (err) return res.json({ Status: "error", Message: "Inserting error in database" });
+
+          return res.json({ Status: "success", Message: "Inserting Complete" });
+        });
+      } else {
+        return res.json({ Status: "error", Message: "Cannot add more than 5 address" });
+      }
+    });
+  }
+
+  if (formState.status === "editAddress") {
+    const updateQuery =
+      "UPDATE users_address SET address = ?, zip_code = ?, phone_number = ?, contact_person = ? WHERE id = ?";
+
+    db.query(updateQuery, updateValues, (err, result) => {
+      if (err) return res.json({ Status: "error", Message: "Updating error from server" });
+
+      return res.json({ Status: "success", Message: "Updated Successfully" });
+    });
+  }
+});
+
+app.put("/update-delivery-address", (req, res) => {
   const { user_id, new_delivery_address } = req.body;
 
   const deliver_info = new_delivery_address.split(",");

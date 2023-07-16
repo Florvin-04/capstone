@@ -62,7 +62,6 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   async function getAddress() {
-    console.log("get");
     try {
       const response = await axios.get(`${route}/user-address`, {
         params: { user_id: loggedInID },
