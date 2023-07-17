@@ -21,13 +21,13 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const [isAutorize, setIsAuthorize] = useState(false);
-  const [formState, setFormState] = useState({
+  const [checkoutItems, setCheckoutItems] = useState({
     checkout_cart: JSON.parse(savedCheckoutCart) || [],
   });
 
   useEffect(() => {
-    localStorage.setItem("reciept_items", JSON.stringify(formState.checkout_cart));
-  }, [formState]);
+    localStorage.setItem("reciept_items", JSON.stringify(checkoutItems.checkout_cart));
+  }, [checkoutItems]);
 
   axios.defaults.withCredentials = true;
   useEffect(() => {
@@ -81,7 +81,7 @@ export const AppProvider = ({ children }) => {
   function getTotal() {
     let total = 0;
 
-    formState.checkout_cart.forEach((item) => {
+    checkoutItems.checkout_cart.forEach((item) => {
       total += item.subtotal;
     });
 
@@ -96,8 +96,8 @@ export const AppProvider = ({ children }) => {
         loggedInName,
         loggedInID,
         isAutorize,
-        formState,
-        setFormState,
+        checkoutItems,
+        setCheckoutItems,
         getTotal,
         loading,
         setLoading,

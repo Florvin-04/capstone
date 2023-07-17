@@ -4,7 +4,7 @@ import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
 
 export const CartProduct = ({ product, setLoadingCart }) => {
-  const { route, setFormState, formState } = useGlobalContext();
+  const { route, setCheckoutItems, checkoutItems } = useGlobalContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +16,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
   function handleChange(e, id = null) {
     const target = e.target;
     const { value, type, checked } = target;
-    const { checkout_cart } = formState;
+    const { checkout_cart } = checkoutItems;
 
     if (value < 0 || (isNaN(value) && type !== "checkbox") || value > 100) {
       return;
@@ -32,7 +32,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
     //     ? [...subtotals, subtotal]
     //     : subtotals.filter((ids) => ids !== subtotal);
 
-    setFormState((prevData) => ({
+    setCheckoutItems((prevData) => ({
       ...prevData,
       checkout_cart: updateCart,
     }));
@@ -48,7 +48,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
     const updatedSubtotal = product.price * updatedQuantity;
     setSubtotal(updatedSubtotal);
 
-    setFormState((prevData) => {
+    setCheckoutItems((prevData) => {
       const update = prevData.checkout_cart.map((item) => {
         if (item.id == product.id) {
           return { ...item, subtotal: updatedSubtotal, quantity: inputValue };
@@ -173,7 +173,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
         type="checkbox"
         name="checkout_cart"
         id={product.id}
-        checked={formState.checkout_cart.some((item) => item.id == product.id)}
+        checked={checkoutItems.checkout_cart.some((item) => item.id == product.id)}
         onChange={(e) => {
           handleChange(e, product.id);
           // getsubtotal(product.id, subtotal);

@@ -303,8 +303,8 @@ app.get("/user-address", (req, res) => {
 
 // TODO
 
-app.post("/user-delivery-address", (req, res) => {
-  const { user_id, delivery_address } = req.body;
+app.get("/user-delivery-address", (req, res) => {
+  const { user_id } = req.query;
 
   const selectQuery =
     "SELECT phone_number, zip_code, deliveryAddress, contact_person FROM delivery_address WHERE user_id = ?";
@@ -314,36 +314,56 @@ app.post("/user-delivery-address", (req, res) => {
       return res.json({ Status: "error", Message: "Error in fetching from database" });
     }
 
-    console.log(user_id);
-    if (result.length === 0) {
-      console.log(delivery_address);
-      const [address, phoneNumber, zipCode, contactPerson] = delivery_address;
-      const values = [address, zipCode, contactPerson, phoneNumber, user_id];
-
-      const insertQuery =
-        "INSERT INTO delivery_address(user_id, deliveryAddress, zip_code, contact_person, phone_number) VALUES (?)";
-
-      db.query(insertQuery, [values], (err, result) => {
-        if (err) return res.json({ Status: "error", Message: "Error in inserting from database" });
-
-        return res.json({
-          Status: "success",
-          Message: "insert complete",
-          Result: result,
-          // Address: result[0]?.deliveryAddress,
-          // ContactPerson: result[0]?.contact_person,
-        });
+    if (result.length > 0) {
+      return res.json({
+        Status: "success",
+        Message: "Success Fetching has result",
+        Result: result[0],
       });
     } else {
       return res.json({
-        Status: "success",
-        Message: "fetch complete",
-        Result: result[0],
-        // Address: result[0]?.deliveryAddress,
-        // ContactPerson: result[0]?.contact_person,
+        Status: "no result",
+        Message: "Success Fetching no result",
+        Result: result.length,
       });
     }
   });
+
+  // db.query(selectQuery, [user_id], (err, result) => {
+  //   if (err) {
+  //     return res.json({ Status: "error", Message: "Error in fetching from database" });
+  //   }
+
+  //   console.log(user_id);
+  //   if (result.length === 0) {
+  //     console.log(delivery_address);
+  //     const [address, phoneNumber, zipCode, contactPerson] = delivery_address;
+  //     const values = [address, zipCode, contactPerson, phoneNumber, user_id];
+
+  //     const insertQuery =
+  //       "INSERT INTO delivery_address(user_id, deliveryAddress, zip_code, contact_person, phone_number) VALUES (?)";
+
+  //     db.query(insertQuery, [values], (err, result) => {
+  //       if (err) return res.json({ Status: "error", Message: "Error in inserting from database" });
+
+  //       return res.json({
+  //         Status: "success",
+  //         Message: "insert complete",
+  //         Result: result,
+  //         // Address: result[0]?.deliveryAddress,
+  //         // ContactPerson: result[0]?.contact_person,
+  //       });
+  //     });
+  //   } else {
+  //     return res.json({
+  //       Status: "success",
+  //       Message: "fetch complete",
+  //       Result: result[0],
+  //       // Address: result[0]?.deliveryAddress,
+  //       // ContactPerson: result[0]?.contact_person,
+  //     });
+  //   }
+  // });
 });
 
 app.post("/add-update-address", (req, res) => {
@@ -383,25 +403,134 @@ app.post("/add-update-address", (req, res) => {
   }
 });
 
-app.put("/update-delivery-address", (req, res) => {
+app.post("/add-update-delivery-address", (req, res) => {
   const { user_id, new_delivery_address } = req.body;
 
   const deliver_info = new_delivery_address.split(",");
   const [address, phoneNumber, zipCode, contactPerson] = deliver_info;
 
-  const values = [address, zipCode, contactPerson, phoneNumber, user_id];
+  const uppdateValues = [address, zipCode, contactPerson, phoneNumber, user_id];
+  const insertValues = [user_id, address, zipCode, contactPerson, phoneNumber];
 
-  const updateQuery =
-    "UPDATE delivery_address SET deliveryAddress = ?, zip_code = ?, contact_person = ?, phone_number = ? WHERE user_id = ?";
+  const selectQuery = "SELECT * FROM delivery_address WHERE user_id = ?";
 
-  db.query(updateQuery, values, (err, result) => {
-    if (err) return res.json({ Status: "error", Message: "Error in updating database" });
+  db.query(selectQuery, [user_id], (err, result) => {
+    if (err) return { Status: "error", Message: "error in fetching from database" };
 
-    if (result) {
-      return res.json({ Status: "success", Message: "Success Updating" });
+    if (result.length > 0) {
+      const updateQuery =
+        "UPDATE delivery_address SET deliveryAddress = ?, zip_code = ?, contact_person = ?, phone_number = ? WHERE user_id = ?";
+
+      db.query(updateQuery, uppdateValues, (err, result) => {
+        if (err) return res.json({ Status: "error", Message: "Error in updating database" });
+
+        if (result) {
+          return res.json({ Status: "success", Message: "Success Updating" });
+        }
+      });
+    } else {
+      const insertQuery =
+        "INSERT INTO `delivery_address`(user_id, deliveryAddress, zip_code, contact_person, phone_number) VALUES (?)";
+
+      db.query(insertQuery, [insertValues], (err, result) => {
+        if (err) return res.json({ Status: "error", Message: "Error in inserting from database" });
+
+        return res.json({ Status: "success", Message: "insert successfully" });
+      });
     }
   });
 });
+
+function generateUniqueIDWithNano() {
+  var currentDate = new Date();
+  var year = currentDate.getFullYear();
+  var month = currentDate.getMonth() + 1; // Months are zero-based
+  var day = currentDate.getDate();
+
+  // Format the values to ensure they have leading zeros if necessary
+  var formattedMonth = month < 10 ? "0" + month : month;
+  var formattedDay = day < 10 ? "0" + day : day;
+
+  // Concatenate the formatted values to create the base ID
+  var baseID = year + formattedMonth + formattedDay;
+
+  // Retrieve high-resolution timestamp
+  var nano = performance.now();
+
+  // Convert to string and remove the dot
+  var nanoString = nano.toString().replace(".", "");
+
+  // Combine the base ID with the nanoseconds to create the unique ID
+  var uniqueID = baseID + nanoString;
+
+  return uniqueID;
+}
+
+app.get("/orders", async (req, res) => {
+  const { user_id } = req.query;
+
+  try {
+    const selectQuery = "SELECT * FROM `orders` WHERE user_id = ?";
+    const result = await executeQuery(selectQuery, [user_id]);
+
+    return res.json({ Status: "success", Message: "fetched successfully", Result: result });
+  } catch (error) {
+    return res.json({ Status: "error", Message: "error occurred", error: error.message });
+  }
+});
+
+app.post("/place-order", async (req, res) => {
+  const { items, addressInfo } = req.body;
+  const { address, zipCode, contactPerson, phoneNumber } = addressInfo;
+
+  try {
+    for (const item of items) {
+      const selectQuery = "SELECT * FROM cart WHERE id = ?";
+      const result = await executeQuery(selectQuery, [item]);
+
+      if (result.length > 0) {
+        const { id, product_id, user_id, quantity } = result[0];
+        const insertValues = [
+          generateUniqueIDWithNano(),
+          product_id,
+          user_id,
+          quantity,
+          `${address} ${zipCode}`,
+          phoneNumber,
+          contactPerson,
+        ];
+
+        const insertQuery =
+          "INSERT INTO orders (order_id, product_id, user_id, quantity, delivery_address, phone_number, contact_person) VALUES (?)";
+        await executeQuery(insertQuery, [insertValues]);
+
+        const deleteQuery = "DELETE FROM cart WHERE id = ?";
+        await executeQuery(deleteQuery, [id]);
+      }
+    }
+
+    return res.json({ Status: "success", Message: "inserted successfully" });
+  } catch (error) {
+    return res.json({ Status: "error", Message: "error occurred" });
+  }
+});
+
+function executeQuery(query, values) {
+  return new Promise((resolve, reject) => {
+    db.query(query, values, (err, result) => {
+      if (err) {
+        const errorDetails = {
+          status: "error",
+          message: "Error executing database query",
+          error: err,
+        };
+        reject(errorDetails);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+}
 
 app.get("/logout", (req, res) => {
   res.clearCookie("token");

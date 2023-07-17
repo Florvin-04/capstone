@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./Checkout.scss";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import CheckoutProduct from "../../Components/CheckoutProduct/CheckoutProduct";
 import Address from "../../Components/Address/Address";
@@ -14,38 +15,35 @@ const initialAddressValues = {
 };
 
 const Checkout = () => {
-  const {
-    // setAddresses,
-    addresses,
-    getTotal,
-    formState,
-    loggedInID,
-    route,
-    getAddress,
-  } = useGlobalContext();
+  const navigate = useNavigate();
+  const { addresses, getTotal, checkoutItems, loggedInID, route, getAddress } = useGlobalContext();
 
   const [loading, setLoading] = useState(true);
   const [chekedProduct, setChekedProduct] = useState({
-    ids: [...formState.checkout_cart.map((item) => item.id)],
+    ids: [...checkoutItems.checkout_cart.map((item) => item.id)],
     items: {},
   });
   const [chosenAddress, setChosenAddress] = useState("");
   const [currentAddress, setCurrentAddress] = useState({
     ...initialAddressValues,
   });
+  const [displayAddressStatus, setDisplayAddressStatus] = useState("");
+
   const [editAddress, setEditAddress] = useState({});
   const [checkoutData, setCheckoutData] = useState([]);
   const [forms, setForms] = useState("chooseAddress");
   const modalRef = useRef();
+
   const displayDeliveryAddress = async () => {
     try {
-      const response = await axios.post(`${route}/user-delivery-address`, {
-        user_id: loggedInID,
-        delivery_address: chosenAddress,
+      const response = await axios.get(`${route}/user-delivery-address`, {
+        params: {
+          user_id: loggedInID,
+        },
       });
 
       if (response.data.Status === "success") {
-        console.log(response.data);
+        console.log(response.data.Message);
 
         setCurrentAddress({
           address: response.data.Result?.deliveryAddress,
@@ -53,9 +51,15 @@ const Checkout = () => {
           phoneNumber: response.data.Result?.phone_number,
           zipCode: response.data.Result?.zip_code,
         });
-      } else {
-        console.log(response.data.Message);
+
+        return;
       }
+
+      if (response.data.Status === "no result") {
+        console.log(response.data.Message);
+        return;
+      }
+      return response.data.Message;
     } catch (error) {
       console.log(error);
     }
@@ -86,7 +90,7 @@ const Checkout = () => {
   useEffect(() => {
     let result = {};
 
-    formState.checkout_cart.forEach((item) => {
+    checkoutItems.checkout_cart.forEach((item) => {
       result[item.id] = { quantity: item.quantity, subtotal: item.subtotal };
     });
 
@@ -109,6 +113,7 @@ const Checkout = () => {
     }
 
     await updateDeliveryAddress();
+    hasCurrentAddress();
     displayDeliveryAddress();
     modalRef.current.close();
     // setCurrentAddress(chosenAddress);
@@ -116,7 +121,7 @@ const Checkout = () => {
 
   const updateDeliveryAddress = async () => {
     try {
-      const response = await axios.put(`${route}/update-delivery-address`, {
+      const response = await axios.post(`${route}/add-update-delivery-address`, {
         user_id: loggedInID,
         new_delivery_address: chosenAddress,
       });
@@ -131,8 +136,40 @@ const Checkout = () => {
     }
   };
 
-  const hasUndefinedValue = Object.values(currentAddress).some((value) => value === undefined);
-  console.log(hasUndefinedValue);
+  async function placeOrder() {
+    try {
+      const response = await axios.post(`${route}/place-order`, {
+        items: [...checkoutItems.checkout_cart.map((item) => item.id)],
+        addressInfo: currentAddress,
+      });
+
+      if (response.data.Status === "success") {
+        console.log(response.data.Message);
+        localStorage.removeItem("reciept_items");
+
+        await new Promise((resolve) => {
+          setLoading(true);
+          setTimeout(resolve, 2000);
+        });
+
+        navigate("/orders");
+        window.location.reload();
+
+        return;
+      }
+      console.log(response.data.Message);
+      return;
+    } catch (error) {
+      console.log("frontend", error);
+    }
+  }
+
+  function hasCurrentAddress() {
+    return Object.values(currentAddress).some((value) => value === "") ? "false" : "true";
+  }
+
+  // console.log(hasCurrentAddress());
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -147,19 +184,24 @@ const Checkout = () => {
         <form onSubmit={handleSubmitAddressForm}>
           {forms === "chooseAddress" && (
             <div>
-              {addresses.map((address, idx) => {
-                return (
-                  <Address
-                    key={idx}
-                    address={address}
-                    idx={idx}
-                    handleChangeAddress={handleChangeAddress}
-                    chosenAddress={chosenAddress}
-                    setForms={setForms}
-                    setEditAddress={setEditAddress}
-                  />
-                );
-              })}
+              <h2>My Address</h2>
+              {addresses.length > 0 ? (
+                addresses.map((address, idx) => {
+                  return (
+                    <Address
+                      key={idx}
+                      address={address}
+                      idx={idx}
+                      handleChangeAddress={handleChangeAddress}
+                      chosenAddress={chosenAddress}
+                      setForms={setForms}
+                      setEditAddress={setEditAddress}
+                    />
+                  );
+                })
+              ) : (
+                <h2>No address</h2>
+              )}
               <button
                 type="button"
                 onClick={() => setForms("newAddress")}
@@ -201,7 +243,7 @@ const Checkout = () => {
 
       <section className="checkout__section">
         Checkout Page
-        {hasUndefinedValue && (
+        {hasCurrentAddress() === "false" ? (
           <button
             onClick={() => {
               getAddress();
@@ -211,8 +253,7 @@ const Checkout = () => {
           >
             address
           </button>
-        )}
-        {!hasUndefinedValue && (
+        ) : (
           <div className="shippingAddress">
             <h2>Shipping Address</h2>
             <button
@@ -246,6 +287,7 @@ const Checkout = () => {
           }
         })}
         <p>total: {getTotal()}</p>
+        <button onClick={placeOrder}>Place Order</button>
       </section>
     </>
   );

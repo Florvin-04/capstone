@@ -11,6 +11,7 @@ import Register from "./Pages/Register/Register";
 import DetailedProduct from "./Pages/DetailedProduct/DetailedProduct";
 import Cart from "./Pages/Cart/Cart";
 import Checkout from "./Pages/Checkout/Checkout";
+import Orders from "./Pages/Orders/Orders";
 
 function App() {
   return (
@@ -42,6 +43,11 @@ function App() {
           <Route
             path="/checkout"
             element={<Checkout />}
+          />
+
+          <Route
+            path="/orders"
+            element={<Orders />}
           />
         </Route>
 
