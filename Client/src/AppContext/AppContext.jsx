@@ -85,7 +85,17 @@ export const AppProvider = ({ children }) => {
       total += item.subtotal;
     });
 
-    return `₱${total.toLocaleString()}`;
+    return toPHCurrency(total);
+  }
+
+  function toPHCurrency(number) {
+    const currencyOptions = {
+      style: "currency",
+      currency: "PHP",
+      currencyDisplay: "symbol",
+    };
+
+    return Number(number).toLocaleString("en-PH", currencyOptions);
   }
 
   return (
@@ -106,6 +116,7 @@ export const AppProvider = ({ children }) => {
         getAddress,
         addresses,
         setAddresses,
+        toPHCurrency,
       }}
     >
       {children}

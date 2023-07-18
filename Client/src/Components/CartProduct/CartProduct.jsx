@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import "./CartProduct.scss";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 export const CartProduct = ({ product, setLoadingCart }) => {
-  const { route, setCheckoutItems, checkoutItems } = useGlobalContext();
+  const { route, setCheckoutItems, checkoutItems, toPHCurrency } = useGlobalContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -123,8 +124,27 @@ export const CartProduct = ({ product, setLoadingCart }) => {
     console.log("Submit");
   }
 
-  function handleDelete(id) {
+  async function handleDelete(id) {
+    setLoading(true);
+    checkoutItems.checkout_cart.filter((item) => item.id != id);
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1500);
+      toast.success(
+        "Deleting Item",
+        {
+          position: toast.POSITION.TOP_CENTER,
+        },
+        { autoClose: 1000 }
+      );
+    });
+    modalRef.current.close();
+
     setLoadingCart(true);
+    setCheckoutItems((prevData) => ({
+      ...prevData,
+      checkout_cart: prevData.checkout_cart.filter((item) => item.id != id),
+    }));
+
     axios
       .delete(`${route}/remove-item-to-cart`, {
         data: {
@@ -134,7 +154,6 @@ export const CartProduct = ({ product, setLoadingCart }) => {
       .then((response) => {
         if (response.data.Status === "success") {
           console.log("Deleted");
-          setLoadingCart(false);
         } else {
           console.log(response.data.Message);
         }
@@ -144,21 +163,23 @@ export const CartProduct = ({ product, setLoadingCart }) => {
 
   return (
     <>
+      <ToastContainer autoClose={1000} />
       <dialog
         ref={modalRef}
         className="cart_modal"
       >
         My modal
         <button
+          disabled={loading}
           onClick={() => {
             document.body.classList.remove("modal-open");
             handleDelete(product.id);
-            modalRef.current.close();
           }}
         >
           Delete Item
         </button>
         <button
+          disabled={loading}
           onClick={() => {
             document.body.classList.remove("modal-open");
 
@@ -185,25 +206,45 @@ export const CartProduct = ({ product, setLoadingCart }) => {
         className="cartProduct__container"
       >
         <div className="cartProduct__container--description">
-          <img
-            src={`${route}/uploads/${product.image}`}
-            alt=""
-          />
-          <div>
-            <p>{product.category}</p>
+          <div className="cartProduct__img--container">
+            <img
+              // width="150px"
+              src={`${route}/uploads/${product.image}`}
+              alt=""
+            />
+          </div>
+          <div className="cartProduct__info">
+            <p className="cartProduct__category">{product.category}</p>
             <div className="cartProduct__name--container">
               <div>
                 <p className="cartProduct__name">{product.title}</p>
-                <p className="cartProduct__price">₱{product.price}</p>
+                <p className="cartProduct__price">{toPHCurrency(product.price)}</p>
               </div>
-              <div className="cart__updating--container">
+              <div className="cartProduct__updating--container">
                 <form onSubmit={handleSubmit}>
                   <button
                     type="button"
                     disabled={loading}
                     onClick={(e) => handleSubmit(e, "add", product.id)}
                   >
-                    +
+                    <svg
+                      width="12"
+                      height="12"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlnsXlink="http://www.w3.org/1999/xlink"
+                    >
+                      <defs>
+                        <path
+                          d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z"
+                          id="b"
+                        />
+                      </defs>
+                      <use
+                        fill="#06c179"
+                        fillRule="nonzero"
+                        xlinkHref="#b"
+                      />
+                    </svg>
                   </button>
                   <input
                     type="text"
@@ -220,12 +261,30 @@ export const CartProduct = ({ product, setLoadingCart }) => {
                     disabled={loading}
                     onClick={(e) => handleSubmit(e, "subtract", product.id)}
                   >
-                    -
+                    <svg
+                      width="12"
+                      height="4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlnsXlink="http://www.w3.org/1999/xlink"
+                    >
+                      <defs>
+                        <path
+                          d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z"
+                          id="a"
+                        />
+                      </defs>
+                      <use
+                        fill="#06c179"
+                        fillRule="nonzero"
+                        xlinkHref="#a"
+                      />
+                    </svg>
                   </button>
                 </form>
                 <div>
                   <button>ViewPoduct</button>
                   <button
+                    className="cart__delete--btn"
                     onClick={() => {
                       document.body.classList.add("modal-open");
                       modalRef.current.showModal();
@@ -239,7 +298,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
           </div>
         </div>
 
-        <p className="cartSubtotal">Subtotal: ₱{subtotal.toLocaleString()}</p>
+        <p className="cartSubtotal">Subtotal: {toPHCurrency(subtotal)}</p>
       </label>
     </>
   );

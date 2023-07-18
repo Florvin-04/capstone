@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import { CartProduct } from "../../Components/CartProduct/CartProduct";
+import { ToastContainer, toast } from "react-toastify";
 
 const Cart = () => {
   const { route, loggedInID, formState, getTotal, cartData, setCartData } = useGlobalContext();
@@ -22,6 +23,9 @@ const Cart = () => {
 
       if (response.data.Status === "success") {
         setCartData(response.data.Result);
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
         setLoading(false);
       } else {
         console.log(response.data.Message);

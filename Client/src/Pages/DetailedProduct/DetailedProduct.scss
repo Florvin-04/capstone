@@ -1,0 +1,99 @@
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
+
+.detailedProduct {
+  outline: 1px solid red;
+
+  @include breakpoint("medium") {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__img--container {
+    display: flex;
+    justify-content: center;
+
+    img {
+      width: rem(250);
+      //   width: 100%;
+      object-fit: contain;
+      aspect-ratio: 1/1;
+
+      @include breakpoint("medium") {
+        width: min(100%, rem(500));
+      }
+    }
+  }
+
+  &__info {
+    //
+    @include breakpoint("medium") {
+      display: grid;
+    }
+
+    > div {
+      padding-block: 1em;
+      display: grid;
+      outline: 1px solid red;
+      gap: 1rem;
+    }
+    &--title {
+      font-size: 1.3rem;
+    }
+
+    &--price {
+      font-size: 1.3rem;
+    }
+
+    form {
+      outline: 2px solid red;
+    //   height: 100%;
+      align-self: end;
+      .form__buttons {
+        outline: 1px solid red;
+        background-color: white;
+        border-radius: 0.3rem;
+        //   padding-inline: .5rem;
+
+        > input {
+          text-align: center;
+          width: 100%;
+          border-color: transparent;
+        }
+
+        display: flex;
+        > button {
+          background-color: transparent;
+          border-color: transparent;
+          // padding: 1em;
+          width: 3rem;
+          padding-block: 1em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+        }
+      }
+
+      .form__submit--btn {
+        padding-block: 0.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        > button {
+          padding-block: 0.3em;
+          display: flex;
+          align-items: center;
+          gap: 0.5em;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+.AddToast {
+  background-color: red;
+  color: red;
+}

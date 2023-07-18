@@ -574,7 +574,7 @@ app.delete("/remove-item-to-cart", async (req, res) => {
     const deleteResult = await executeQuery(deleteQuery, [productID]);
 
     if (deleteResult) {
-      return res.json({ Status: "Success", Message: "Deleted Successfully" });
+      return res.json({ Status: "success", Message: "Deleted Successfully" });
     }
 
     return res.json({ Status: "Error", Message: "Error from deleting" });
@@ -857,6 +857,7 @@ app.get("/orders", async (req, res) => {
 app.post("/place-order", async (req, res) => {
   const { items, addressInfo } = req.body;
   const { address, zipCode, contactPerson, phoneNumber } = addressInfo;
+  const status = "pending";
 
   try {
     for (const item of items) {
@@ -873,10 +874,11 @@ app.post("/place-order", async (req, res) => {
           `${address} ${zipCode}`,
           phoneNumber,
           contactPerson,
+          status,
         ];
 
         const insertQuery =
-          "INSERT INTO orders (order_id, product_id, user_id, quantity, delivery_address, phone_number, contact_person) VALUES (?)";
+          "INSERT INTO orders (order_id, product_id, user_id, quantity, delivery_address, phone_number, contact_person, status) VALUES (?)";
         await executeQuery(insertQuery, [insertValues]);
 
         const deleteQuery = "DELETE FROM cart WHERE id = ?";

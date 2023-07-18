@@ -1,20 +1,28 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import "./CardProduct.scss";
+import { Link, NavLink } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 
 const CardProduct = (product) => {
-  const { route } = useGlobalContext();
+  const { route,toPHCurrency } = useGlobalContext();
   return (
     <>
-      <Link to={`${product.id}`}>
-        <h2>{product.id}</h2>
-        <p> {product.title}</p>
-        <p>{product.description}</p>
-        <img
-          src={`${route}/uploads/${product.image}`}
-          alt=""
-        />
-      </Link>
+      <NavLink
+        to={`${product.id}`}
+        className="cardProduct"
+      >
+        <div className="cardProduct__image--container">
+          <img
+            src={`${route}/uploads/${product.image}`}
+            alt=""
+          />
+        </div>
+        <p className="cardProduct__info--category">{product.category}</p>
+        <div className="cardProduct__info">
+          <p className="cardProduct__info--title">{product.title}</p>
+          <p className="cardProduct__info--price">{toPHCurrency(product.price)}</p>
+        </div>
+      </NavLink>
     </>
   );
 };
