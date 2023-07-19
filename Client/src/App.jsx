@@ -37,10 +37,10 @@ function App() {
               element={<DetailedProduct />}
             />
 
-            <Route
+            {/* <Route
               path="/cart"
               element={<Cart />}
-            />
+            /> */}
 
             <Route
               path="/checkout"
@@ -62,6 +62,7 @@ function App() {
             element={<Register />}
           />
         </Routes>
+        <Cart />
       </div>
     </>
   );

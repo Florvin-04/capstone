@@ -8,7 +8,8 @@ import { BsCartPlus } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 
 const DetailedProduct = () => {
-  const { products, route, loggedInID } = useGlobalContext();
+  const { products, route, loggedInID, fetchCartData, toPHCurrency } =
+    useGlobalContext();
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,37 +28,57 @@ const DetailedProduct = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
+    // setIsCartLoading(true)
 
     await new Promise((resolve) => {
       setTimeout(resolve, 1000);
     });
 
-    axios.defaults.withCredentials = true;
-    toast.promise(
-      axios
-        .post(`${route}/add-to-cart`, {
-          product_id: id,
-          user_id: loggedInID,
-          quantity: quantity,
-        })
-        .then((response) => {
-          if (response.data.Status === "success") {
-            console.log(response.data.Message);
-            setQuantity(1);
-          } else {
-            console.log(response.data.Message);
-          }
-        })
-        .catch((err) => console.log(err)),
-      {
-        pending: "Adding To Cart",
-        success: "Item Added To Cart",
-        error: "Error",
-      },
-      { autoClose: 1500 }
-    );
+    console.log("submit");
 
-    setIsLoading(false);
+    axios.defaults.withCredentials = true;
+    // toast.promise(
+    //   axios
+    //     .post(`${route}/add-to-cart`, {
+    //       product_id: id,
+    //       user_id: loggedInID,
+    //       quantity: quantity,
+    //     })
+    //     .then(async (response) => {
+    //       if (response.data.Status === "success") {
+    //         console.log(response.data.Message);
+    //         console.log("cart data load");
+    //         await fetchCartData();
+    //         setQuantity(1);
+    //       } else {
+    //         console.log(response.data.Message);
+    //       }
+    //     })
+    //     .catch((err) => console.log(err)),
+    //   {
+    //     pending: "Adding To Cart",
+    //     success: "Item Added To Cart",
+    //     error: "Error",
+    //   },
+    //   { autoClose: 1500 }
+    // );
+    // setIsCartLoading(false)
+
+    try {
+      const response = await axios.post(`${route}/add-to-cart`, {
+        product_id: id,
+        user_id: loggedInID,
+        quantity: quantity,
+      });
+
+      if (response.data.Status === "success") {
+        console.log(response.data.Message);
+        await fetchCartData();
+        setQuantity(1);
+      }
+    } catch (error) {
+      console.log(err);
+    }
 
     // axios
     //   .post(`${route}/add-to-cart`, {
@@ -74,6 +95,7 @@ const DetailedProduct = () => {
     //     }
     //   })
     //   .catch((err) => console.log(err));
+    setIsLoading(false);
   }
 
   return (
@@ -100,7 +122,7 @@ const DetailedProduct = () => {
                     <p className="detailedProduct__info--category">{product.category}</p>
                     <p className="detailedProduct__info--title">{product.title}</p>
                     <p className="detailedProduct__info--description">{product.description}</p>
-                    <p className="detailedProduct__info--price">₱{product.price}</p>
+                    <p className="detailedProduct__info--price">{toPHCurrency(product.price)}</p>
                   </div>
                   <form onSubmit={handleSubmit}>
                     <div className="form__buttons">
@@ -158,6 +180,7 @@ const DetailedProduct = () => {
                           />
                         </svg>
                       </button>
+
                     </div>
 
                     <div className="form__submit--btn">

@@ -1,37 +1,76 @@
-.checkoutCard {
-  outline: 1px solid red;
-  display: flex;
-  gap: 1rem;
-  .checkoutCard__description {
-    // display: flex;
-    //   outline: 1px solid red;
-    width: 100%;
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
 
-    > div {
-      margin-top: 1rem;
-      outline: 2px solid red;
-      display: flex;
-      align-items: center;
+.checkoutCard__wrapper {
+  .checkoutCard {
+    outline: 1px solid red;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    .checkoutCard__description {
+      width: 100%;
+      // display: flex;
+      // justify-content: space-between;
+      // flex-wrap: wrap;
 
-      justify-content: space-between;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      display: grid;
+      gap: 1rem;
 
-      > div {
+      @include breakpoint("medium") {
+        grid-template-columns: 1fr 1fr;
+        gap: 0rem;
+      }
+
+      // > div {
+      //   display: flex;
+      //   justify-content: space-between;
+      //   // gap: 1em;
+      //   outline: 2px solid red;
+      //   flex-basis: 200px;
+      // }
+
+      > div:first-child {
+        // outline: 1px solid red;
+        display: grid;
+        // gap: 1rem;
+        width: min(25rem, 100%);
+        @include breakpoint("medium") {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .checkoutCard__description--category {
+          //
+          @include breakpoint("medium") {
+            align-self: center;
+            justify-self: end;
+          }
+        }
+
+        .checkoutCard__description--title {
+          @include breakpoint("medium") {
+            // background-color: red;
+            grid-row: 1 / 1;
+          }
+        }
+      }
+
+      > div:last-child {
+        // outline: 1px solid red;
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        // gap: 1em;
-        outline: 2px solid red;
-        flex-basis: 200px;
+        width: min(25rem, 100%);
+
+        @include breakpoint("medium") {
+          justify-content: space-around;
+          width: 100%;
+        }
       }
 
       .checkoutCard__description--title {
         font-size: 1.2rem;
-        width: min(300px, 100%);
+        width: min(250px, 100%);
         overflow: hidden;
-
         max-height: 3.5rem;
-
         text-overflow: ellipsis;
         word-break: word;
         display: -webkit-box;
@@ -39,5 +78,9 @@
         -webkit-line-clamp: 2;
       }
     }
+  }
+  .checkoutCard__subtotal {
+    text-align: right;
+    // color: red;
   }
 }

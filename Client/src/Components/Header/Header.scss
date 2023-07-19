@@ -19,6 +19,14 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+
+      .cart-btn {
+        background-color: transparent;
+        border-color: transparent;
+     
+        display: flex;
+        align-items: center;
+      }
     }
   }
 

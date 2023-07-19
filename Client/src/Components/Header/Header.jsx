@@ -6,7 +6,7 @@ import axios from "axios";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 
 const Header = () => {
-  const { loggedInName, loggedInID, isAutorize } = useGlobalContext();
+  const { loggedInName, loggedInID, isAutorize, showCart, route } = useGlobalContext();
   const navigate = useNavigate();
   // const [isAutorize, setIsAuthorize] = useState(false);
 
@@ -25,7 +25,7 @@ const Header = () => {
   // axios.defaults.withCredentials = true;
   function handleLogout() {
     axios
-      .get("http://localhost:8081/logout")
+      .get(`${route}/logout`)
       .then((response) => {
         if (response.data.Status === "success") {
           localStorage.removeItem("reciept_items");
@@ -49,18 +49,24 @@ const Header = () => {
             <li className="navigation__list--item">
               <NavLink
                 to="/products"
-                className="navigation__list--item"
+                className="navigation__list--link"
               >
                 products
               </NavLink>
             </li>
             <li className="navigation__list--item">
-              <NavLink
+              {/* <NavLink
                 to="/cart"
                 className="navigation__list--item"
               >
                 <FaShoppingCart />
-              </NavLink>
+              </NavLink> */}
+              <button
+                className="navigation__list--link cart-btn"
+                onClick={showCart}
+              >
+                <FaShoppingCart />
+              </button>
             </li>
           </ul>
 

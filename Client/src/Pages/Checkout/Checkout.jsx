@@ -14,6 +14,14 @@ const initialAddressValues = {
   zipCode: "",
 };
 
+const paymentMethod = [
+  { method: "Cash On Delivery", available: true },
+  { method: "Gcash", available: false },
+  { method: "Link Bank Account", available: false },
+  { method: "Credit / Debit Card", available: false },
+  { method: "E-wallet", available: true },
+];
+
 const Checkout = () => {
   const navigate = useNavigate();
   const { addresses, getTotal, checkoutItems, loggedInID, route, getAddress } = useGlobalContext();
@@ -27,7 +35,7 @@ const Checkout = () => {
   const [currentAddress, setCurrentAddress] = useState({
     ...initialAddressValues,
   });
-  const [displayAddressStatus, setDisplayAddressStatus] = useState("");
+  const [chosentPaymentMethod, setChosentPaymentMethod] = useState("");
 
   const [editAddress, setEditAddress] = useState({});
   const [checkoutData, setCheckoutData] = useState([]);
@@ -141,6 +149,7 @@ const Checkout = () => {
       const response = await axios.post(`${route}/place-order`, {
         items: [...checkoutItems.checkout_cart.map((item) => item.id)],
         addressInfo: currentAddress,
+        payment_method: chosentPaymentMethod,
       });
 
       if (response.data.Status === "success") {
@@ -244,7 +253,7 @@ const Checkout = () => {
       <section className="checkout__section">
         Checkout Page
         {hasCurrentAddress() === "false" ? (
-          <button
+          <button 
             onClick={() => {
               getAddress();
               document.body.classList.add("modal-open");
@@ -270,11 +279,33 @@ const Checkout = () => {
                 Contact Person: {currentAddress.contactPerson} | {currentAddress.phoneNumber}
               </p>
               <p>
-                Addess {currentAddress.address} | {currentAddress.zipCode}
+                Addess: {currentAddress.address} | {currentAddress.zipCode}
               </p>
+              <p>Shipping Method: Cash on Delivery</p>
+              {chosentPaymentMethod}
+              <div className="shipping__method">
+                {paymentMethod.map((payment, idx) => {
+                  return (
+                    <div key={idx}>
+                      <input
+                        disabled={!payment.available}
+                        type="radio"
+                        name="shipping_method"
+                        value={payment.method}
+                        id={payment.method}
+                        checked={chosentPaymentMethod === `${payment.method}`}
+                        onChange={(e) => setChosentPaymentMethod(e.target.value)}
+                      />
+
+                      <label htmlFor={payment.method}>{payment.method}</label>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
+
         {checkoutData.map((product) => {
           if (chekedProduct.ids.includes(product.id)) {
             return (

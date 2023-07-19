@@ -34,7 +34,7 @@ import { useGlobalContext } from "../../AppContext/AppContext";
 // };
 
 const Register = () => {
-  const { isAutorize } = useGlobalContext();
+  const { isAutorize, route } = useGlobalContext();
 
   const navigate = useNavigate();
 
@@ -44,25 +44,46 @@ const Register = () => {
     await new Promise((resolve) => {
       setTimeout(resolve, 1000);
     });
+    axios.defaults.withCredentials = true;
 
-    axios
-      .post("http://localhost:8081/register", {
+    try {
+      const response = await axios.post(`${route}/register`, {
         email: values.email,
         firstName: values.firstName,
         lastName: values.lastName,
         password: values.password,
         // email: values.email,
-      })
-      .then((response) => {
-        if (response.data.Status === "success") {
-          console.log(response.data.Message);
-          actions.resetForm();
-          navigate("/login");
-        } else {
-          console.log(response.data.Message);
-        }
-      })
-      .catch((err) => console.log(err));
+      });
+
+      if (response.data.Status === "success") {
+        console.log(response.data.Message);
+        actions.resetForm();
+        navigate("/login");
+      } else {
+        console.log(response.data.Message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    // axios
+    //   .post(`${route}/register`, {
+    //     email: values.email,
+    //     firstName: values.firstName,
+    //     lastName: values.lastName,
+    //     password: values.password,
+    //     // email: values.email,
+    //   })
+    //   .then((response) => {
+    //     if (response.data.Status === "success") {
+    //       console.log(response.data.Message);
+    //       actions.resetForm();
+    //       navigate("/login");
+    //     } else {
+    //       console.log(response.data.Message);
+    //     }
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   const { values, errors, touched, isSubmitting, handleChange, handleBlur, handleSubmit } =

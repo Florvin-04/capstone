@@ -1,0 +1,75 @@
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
+
+.cart__page {
+  // padding: 1em 1em 0em 1em;
+  background-color: white;
+  //   display: grid;
+  //   outline: 5px solid red;
+  position: fixed;
+  inset: 0 0 0 0;
+  //   overflow: scroll;
+  transform: translateX(100%);
+  transition: transform ease-in-out 0.1s;
+
+  @include breakpoint("medium") {
+    inset: 0% 0 0 50%;
+  }
+  @include breakpoint("large") {
+    inset: 0% 0 0 60%;
+  }
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  .cart__parent {
+    // outline: 3px solid red;
+    padding: 0em 1em 1em 1em;
+    // display: grid;
+    // grid-template-columns: 1fr;
+    // gap: 0.5em;
+    overflow-y: scroll;
+    height: 85%;
+
+    &--header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      background-color: white;
+      position: sticky;
+      top: 0;
+
+      padding-block: 1em;
+    }
+  }
+
+  &--footer {
+    padding: 1em;
+    background-color: red;
+    position: fixed;
+    bottom: 0rem;
+    height: 15%;
+    width: 100%;
+    display: grid;
+
+    > p {
+      justify-self: end;
+    }
+
+    .cart__empty--message {
+      justify-self: center;
+      align-self: center;
+    }
+  }
+
+  .empty_cart {
+    position: fixed;
+    z-index: 1;
+    inset: 0;
+    background-color: white;
+
+    display: grid;
+    place-content: center;
+  }
+}

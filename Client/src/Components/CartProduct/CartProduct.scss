@@ -96,7 +96,15 @@
 //   }
 // }
 
+.checkout_cart:checked + .cartProduct__container {
+  background-color: red;
+}
+
+
+
+
 .cartProduct__container {
+  margin-top: 1rem;
   outline: 1px solid red;
 
   display: grid;
@@ -108,14 +116,16 @@
     // gap: 1rem;
 
     display: flex;
+    align-items: center;
     gap: 1rem;
 
     .cartProduct__img--container {
       outline: 1px solid red;
       display: flex;
+
       img {
-        width: 150px;
-        max-width: 150px;
+        width: 100px;
+        max-width: 100px;
         // width: min(100%, rem(150));
         object-fit: contain;
         aspect-ratio: 1/ 1;
@@ -125,14 +135,21 @@
     .cartProduct__info {
       outline: 1px solid red;
 
+      width: 100%;
+
+      .cartProduct__category {
+        font-size: 0.8rem;
+      }
+
       .cartProduct__name--container {
         //
 
         .cartProduct__name {
           outline: 1px solid red;
           height: 3.125rem;
+          width: 85%;
           color: black;
-          font-size: 1.1rem;
+          font-size: 1rem;
           word-wrap: break-word;
           white-space: normal;
           overflow: hidden;
@@ -142,8 +159,28 @@
           -webkit-line-clamp: 2;
         }
 
+        .cartProduct__price {
+          opacity: 0.8;
+          font-size: rem(15);
+        }
+
+        .cartSubtotal {
+          margin-left: auto;
+        }
+
         .cartProduct__updating--container {
           //
+
+          > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            // width: 100%;
+            // justify-content: space-around;
+            outline: 2px solid red;
+            text-align: center;
+            // flex-wrap: wrap;
+          }
 
           form {
             display: flex;
@@ -159,8 +196,8 @@
               justify-content: center;
               align-items: center;
 
-              &:disabled{
-                cursor:wait;
+              &:disabled {
+                cursor: wait;
               }
             }
             > input {

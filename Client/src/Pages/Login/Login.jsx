@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Route, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const { isAutorize } = useGlobalContext();
+  const { isAutorize, route } = useGlobalContext();
 
   const [loginState, setLoginState] = useState({
     email: "",
@@ -37,7 +37,7 @@ const Login = () => {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8081/login", loginState)
+      .post(`${route}/login`, loginState)
       .then((response) => {
         if (response.data.Status === "success") {
           console.log("Logged  In");

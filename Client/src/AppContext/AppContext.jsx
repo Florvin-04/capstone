@@ -21,9 +21,20 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const [isAutorize, setIsAuthorize] = useState(false);
+  const [isCartShown, setIsCartShown] = useState(false);
   const [checkoutItems, setCheckoutItems] = useState({
     checkout_cart: JSON.parse(savedCheckoutCart) || [],
   });
+
+  function showCart() {
+    document.body.classList.add("modal-open");
+    setIsCartShown(true);
+  }
+
+  function hideCart() {
+    document.body.classList.remove("modal-open");
+    setIsCartShown(false);
+  }
 
   useEffect(() => {
     localStorage.setItem("reciept_items", JSON.stringify(checkoutItems.checkout_cart));
@@ -45,7 +56,7 @@ export const AppProvider = ({ children }) => {
 
     //get authetication logged in
 
-    axios.get("http://localhost:8081").then((response) => {
+    axios.get(`${route}`).then((response) => {
       if (response.data.Status === "success") {
         // console.log(response.data);
         setLoggedInName((prevData) => ({
@@ -60,6 +71,32 @@ export const AppProvider = ({ children }) => {
       }
     });
   }, []);
+
+  const fetchCartData = async () => {
+    // setIsCartLoading(true);
+    try {
+      const response = await axios.get(`${route}/cart`, {
+        params: { user_id: loggedInID },
+      });
+
+      if (response.data.Status === "success") {
+        // console.log(response);
+        setCartData(response.data.Result);
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
+        // setIsCartLoading(false);
+      } else {
+        console.log(response.data.Message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartData();
+  }, [loggedInID]);
 
   async function getAddress() {
     try {
@@ -117,6 +154,10 @@ export const AppProvider = ({ children }) => {
         addresses,
         setAddresses,
         toPHCurrency,
+        fetchCartData,
+        isCartShown,
+        hideCart,
+        showCart,
       }}
     >
       {children}

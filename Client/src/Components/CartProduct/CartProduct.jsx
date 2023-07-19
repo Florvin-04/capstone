@@ -5,14 +5,20 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
 export const CartProduct = ({ product, setLoadingCart }) => {
-  const { route, setCheckoutItems, checkoutItems, toPHCurrency } = useGlobalContext();
+  const { route, setCheckoutItems, checkoutItems, toPHCurrency, fetchCartData } =
+    useGlobalContext();
 
   const [loading, setLoading] = useState(false);
 
   const [inputValue, setInputValue] = useState(product.quantity);
-  const [updatedQuantity, setUpdatedQuantity] = useState(product.quantity);
+  const [inputPreviousValue, setInputPreviousValue] = useState(product.quantity);
+
   const [subtotal, setSubtotal] = useState(0);
   const modalRef = useRef();
+
+  useEffect(() => {
+    setInputValue(product.quantity);
+  }, [product]);
 
   function handleChange(e, id = null) {
     const target = e.target;
@@ -46,7 +52,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
   useEffect(() => {
     // setLoadingCart(true)
     //  console.log(inputValue, updatedQuantity);
-    const updatedSubtotal = product.price * updatedQuantity;
+    const updatedSubtotal = product.price * inputValue;
     setSubtotal(updatedSubtotal);
 
     setCheckoutItems((prevData) => {
@@ -58,21 +64,22 @@ export const CartProduct = ({ product, setLoadingCart }) => {
       });
       return { ...prevData, checkout_cart: update };
     });
-  }, [loading]);
+  }, [loading, inputValue]);
 
   function handleBlur(e) {
-    // if(updateCart)
     handleSubmit(e);
   }
 
   function handleSubmit(e, action = "update", id) {
     e.preventDefault();
+
     if (
+      isNaN(inputValue) ||
       inputValue == "" ||
       inputValue == 0 ||
-      (inputValue == updatedQuantity && action == "update")
+      (inputValue == inputPreviousValue && action == "update")
     ) {
-      setInputValue(updatedQuantity);
+      setInputValue(inputPreviousValue);
       return;
     }
 
@@ -105,14 +112,9 @@ export const CartProduct = ({ product, setLoadingCart }) => {
 
             if (response.data.cart.action == "subtract") {
               setInputValue((prevData) => Number(prevData) - 1);
-
-              // setInputValue((prevData) => ({
-              //   ...prevData,
-              //   quantity: Number(prevData.quantity) - 1,
-              // }));
             }
 
-            setUpdatedQuantity(response.data.cart.quantity);
+            setInputPreviousValue(response.data.cart.quantity);
           }, 1000);
         } else {
           console.log(response);
@@ -139,26 +141,43 @@ export const CartProduct = ({ product, setLoadingCart }) => {
     });
     modalRef.current.close();
 
-    setLoadingCart(true);
+    // setLoadingCart(true);
     setCheckoutItems((prevData) => ({
       ...prevData,
       checkout_cart: prevData.checkout_cart.filter((item) => item.id != id),
     }));
 
-    axios
-      .delete(`${route}/remove-item-to-cart`, {
+    try {
+      const response = await axios.delete(`${route}/remove-item-to-cart`, {
         data: {
           productID: id,
         },
-      })
-      .then((response) => {
-        if (response.data.Status === "success") {
-          console.log("Deleted");
-        } else {
-          console.log(response.data.Message);
-        }
-      })
-      .catch((err) => console.log("frontent Error", err));
+      });
+
+      if (response.data.Status === "success") {
+        console.log("Deleted");
+        await fetchCartData();
+      } else {
+        console.log(response.data.Message);
+      }
+    } catch (error) {
+      console.log("frontent Error", err);
+    }
+
+    // axios
+    //   .delete(`${route}/remove-item-to-cart`, {
+    //     data: {
+    //       productID: id,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     if (response.data.Status === "success") {
+    //       console.log("Deleted");
+    //     } else {
+    //       console.log(response.data.Message);
+    //     }
+    //   })
+    //   .catch((err) => console.log("frontent Error", err));
   }
 
   return (
@@ -191,6 +210,8 @@ export const CartProduct = ({ product, setLoadingCart }) => {
       </dialog>
 
       <input
+        hidden
+        className="checkout_cart"
         type="checkbox"
         name="checkout_cart"
         id={product.id}
@@ -218,70 +239,76 @@ export const CartProduct = ({ product, setLoadingCart }) => {
             <div className="cartProduct__name--container">
               <div>
                 <p className="cartProduct__name">{product.title}</p>
-                <p className="cartProduct__price">{toPHCurrency(product.price)}</p>
+                {/* <p className="cartProduct__price">{toPHCurrency(product.price)}</p> */}
               </div>
               <div className="cartProduct__updating--container">
-                <form onSubmit={handleSubmit}>
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={(e) => handleSubmit(e, "add", product.id)}
-                  >
-                    <svg
-                      width="12"
-                      height="12"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                    >
-                      <defs>
-                        <path
-                          d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z"
-                          id="b"
-                        />
-                      </defs>
-                      <use
-                        fill="#06c179"
-                        fillRule="nonzero"
-                        xlinkHref="#b"
-                      />
-                    </svg>
-                  </button>
-                  <input
-                    type="text"
-                    name="updateCart"
-                    id="updateCart"
-                    value={inputValue}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    disabled={loading}
-                    size={3}
-                  />
-                  <button
-                    type="button"
-                    disabled={loading}
-                    onClick={(e) => handleSubmit(e, "subtract", product.id)}
-                  >
-                    <svg
-                      width="12"
-                      height="4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                    >
-                      <defs>
-                        <path
-                          d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z"
-                          id="a"
-                        />
-                      </defs>
-                      <use
-                        fill="#06c179"
-                        fillRule="nonzero"
-                        xlinkHref="#a"
-                      />
-                    </svg>
-                  </button>
-                </form>
                 <div>
+                  <form onSubmit={handleSubmit}>
+                    <button
+                      type="button"
+                      disabled={loading}
+                      onClick={(e) => handleSubmit(e, "add", product.id)}
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlnsXlink="http://www.w3.org/1999/xlink"
+                      >
+                        <defs>
+                          <path
+                            d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z"
+                            id="b"
+                          />
+                        </defs>
+                        <use
+                          fill="#06c179"
+                          fillRule="nonzero"
+                          xlinkHref="#b"
+                        />
+                      </svg>
+                    </button>
+                    <input
+                      type="text"
+                      name="updateCart"
+                      id="updateCart"
+                      value={inputValue}
+                      // value={product.quantity}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      disabled={loading}
+                      size={1}
+                    />
+                    <button
+                      type="button"
+                      disabled={loading}
+                      onClick={(e) => handleSubmit(e, "subtract", product.id)}
+                    >
+                      <svg
+                        width="12"
+                        height="4"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlnsXlink="http://www.w3.org/1999/xlink"
+                      >
+                        <defs>
+                          <path
+                            d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z"
+                            id="a"
+                          />
+                        </defs>
+                        <use
+                          fill="#06c179"
+                          fillRule="nonzero"
+                          xlinkHref="#a"
+                        />
+                      </svg>
+                    </button>
+                  </form>
+
+                  <p className="cartProduct__price">{toPHCurrency(product.price)}</p>
+                  <p className="cartSubtotal">{toPHCurrency(subtotal)}</p>
+                </div>
+                {/* <div>
                   <button>ViewPoduct</button>
                   <button
                     className="cart__delete--btn"
@@ -292,13 +319,12 @@ export const CartProduct = ({ product, setLoadingCart }) => {
                   >
                     Delete
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </div>
-
-        <p className="cartSubtotal">Subtotal: {toPHCurrency(subtotal)}</p>
+        {/* <p className="cartSubtotal">{toPHCurrency(subtotal)}</p> */}
       </label>
     </>
   );

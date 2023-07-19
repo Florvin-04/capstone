@@ -4,9 +4,20 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+// import { createProxyMiddleware } from "http-proxy-middleware";
+import dotenv from "dotenv";
+dotenv.config();
 const salt = 10;
 
 const app = express();
+
+// const backendProxy = createProxyMiddleware("/", {
+//   target: "http://localhost:8081",
+//   changeOrigin: true,
+// });
+
+// app.use(backendProxy);
+
 app.use(
   cors({
     origin: ["http://localhost:5173"],
@@ -19,17 +30,17 @@ app.use(express.json());
 app.use("/uploads", express.static("./uploads"));
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "capstone",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 db.connect((err) => {
   if (err) {
     console.log("Error in Connection");
   } else {
-    console.log("connected");
+    console.log("database connected");
   }
 });
 
@@ -37,7 +48,7 @@ const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.json({ Status: "error", Message: "Please Log In" });
 
-  jwt.verify(token, "jwt-sample-secret-key", (err, decoded) => {
+  jwt.verify(token, process.env.API_KEY, (err, decoded) => {
     if (err) return res.json({ Status: "error", Message: "Token Error" });
 
     req.first_name = decoded.first_name;
@@ -57,48 +68,88 @@ app.get("/", verifyUser, (req, res) => {
   });
 });
 
-app.post("/register", async (req, res) => {
+// app.post("/register", async (req, res) => {
+//   const { email, firstName, lastName, password } = req.body;
+
+//   try {
+//     const selectQuery = "SELECT * FROM users WHERE email_address = ?";
+//     const selectResult = await executeQuery(selectQuery, [email]);
+
+//     if (selectResult.length > 0) {
+//       return res.json({ Status: "error", Message: "Email address already exists" });
+//     }
+
+//     const insertQuery =
+//       "INSERT INTO users (email_address, first_name, last_name, password) VALUES (?)";
+
+//     bcrypt.hash(password.toString(), salt, async (err, hashPassword) => {
+//       const data = [email, firstName, lastName, hashPassword];
+
+//       if (err) {
+//         return res.json({ Status: "error", Message: "Error in hashing password" });
+//       }
+//       const insertResult = await executeQuery(insertQuery, data);
+
+//       if (insertResult) {
+//         return res.json({ Status: "success", Message: "User Created" });
+//       }
+//       return res.json({ Status: "success", Message: "error in creating user" });
+//     });
+//   } catch (error) {
+//     return res.json({ Status: "error", Message: error.error });
+//   }
+
+//   // const emailCheckQuery = "SELECT * FROM users WHERE email_address = ?";
+
+//   // db.query(emailCheckQuery, [email], (err, result) => {
+//   //   if (err) {
+//   //     return res.json({ Status: "error", Message: "Error in server" });
+//   //   }
+
+//   //   if (result.length > 0) {
+//   //     return res.json({ Status: "error", Message: "Email address already exists" });
+//   //   }
+
+//   //   const sql =
+//   //     "INSERT INTO users (email_address, first_name, last_name, password) VALUES (?,?,?,?)";
+
+//   //   bcrypt.hash(password.toString(), salt, (err, hashPassword) => {
+//   //     const data = [email, firstName, lastName, hashPassword];
+
+//   //     if (err) {
+//   //       return res.json({ Status: "error", Message: "Error in hashing password" });
+//   //     }
+//   //     db.query(sql, data, (err, result) => {
+//   //       if (err) {
+//   //         return res.json({ Status: "error", Message: "error in server" });
+//   //       }
+
+//   //       if (result) {
+//   //         return res.json({ Status: "success", Message: "User Created" });
+//   //       } else {
+//   //         return res.json({ Status: "success", Message: "error in creating user" });
+//   //       }
+//   //     });
+//   //   });
+
+//   //   // const sql =
+//   //   //   "INSERT INTO users (email_address, first_name, last_name, password) VALUES (?,?,?,?)";
+
+//   //   // db.query(sql, data, (err, result) => {
+//   //   //   if (err) {
+//   //   //     return res.json({ Status: "error", Message: "error in server" });
+//   //   //   }
+//   //   //   if (result) {
+//   //   //     return res.json({ Status: "success", Message: "User Created" });
+//   //   //   } else {
+//   //   //     return res.json({ Status: "success", Message: "error in creating user" });
+//   //   //   }
+//   //   // });
+//   // });
+// });
+
+app.post("/register", (req, res) => {
   const { email, firstName, lastName, password } = req.body;
-
-  try {
-    const selectQuery = "SELECT * FROM users WHERE email_address = ?";
-    const selectResult = await executeQuery(selectQuery, [email]);
-
-    if (selectResult.length > 0) {
-      return res.json({ Status: "error", Message: "Email address already exists" });
-    }
-
-    const insertQuery =
-      "INSERT INTO users (email_address, first_name, last_name, password) VALUES (?)";
-
-    bcrypt.hash(password.toString(), salt, async (err, hashPassword) => {
-      const data = [email, firstName, lastName, hashPassword];
-
-      if (err) {
-        return res.json({ Status: "error", Message: "Error in hashing password" });
-      }
-      const insertResult = await executeQuery(insertQuery, data);
-
-      if (insertResult) {
-        return res.json({ Status: "success", Message: "User Created" });
-      }
-      return res.json({ Status: "success", Message: "error in creating user" });
-
-      // db.query(sql, data, (err, result) => {
-      //   if (err) {
-      //     return res.json({ Status: "error", Message: "error in server" });
-      //   }
-
-      //   if (result) {
-      //     return res.json({ Status: "success", Message: "User Created" });
-      //   } else {
-      //     return res.json({ Status: "success", Message: "error in creating user" });
-      //   }
-      // });
-    });
-  } catch (error) {
-    return res.json({ Status: "error", Message: error.error });
-  }
 
   const emailCheckQuery = "SELECT * FROM users WHERE email_address = ?";
 
@@ -148,58 +199,6 @@ app.post("/register", async (req, res) => {
     // });
   });
 });
-
-// app.post("/register", (req, res) => {
-//   const { email, firstName, lastName, password } = req.body;
-
-//   const emailCheckQuery = "SELECT * FROM users WHERE email_address = ?";
-
-//   db.query(emailCheckQuery, [email], (err, result) => {
-//     if (err) {
-//       return res.json({ Status: "error", Message: "Error in server" });
-//     }
-
-//     if (result.length > 0) {
-//       return res.json({ Status: "error", Message: "Email address already exists" });
-//     }
-
-//     const sql =
-//       "INSERT INTO users (email_address, first_name, last_name, password) VALUES (?,?,?,?)";
-
-//     bcrypt.hash(password.toString(), salt, (err, hashPassword) => {
-//       const data = [email, firstName, lastName, hashPassword];
-
-//       if (err) {
-//         return res.json({ Status: "error", Message: "Error in hashing password" });
-//       }
-//       db.query(sql, data, (err, result) => {
-//         if (err) {
-//           return res.json({ Status: "error", Message: "error in server" });
-//         }
-
-//         if (result) {
-//           return res.json({ Status: "success", Message: "User Created" });
-//         } else {
-//           return res.json({ Status: "success", Message: "error in creating user" });
-//         }
-//       });
-//     });
-
-//     // const sql =
-//     //   "INSERT INTO users (email_address, first_name, last_name, password) VALUES (?,?,?,?)";
-
-//     // db.query(sql, data, (err, result) => {
-//     //   if (err) {
-//     //     return res.json({ Status: "error", Message: "error in server" });
-//     //   }
-//     //   if (result) {
-//     //     return res.json({ Status: "success", Message: "User Created" });
-//     //   } else {
-//     //     return res.json({ Status: "success", Message: "error in creating user" });
-//     //   }
-//     // });
-//   });
-// });
 
 // for hash pass
 // app.post("/login", async (req, res) => {
@@ -288,7 +287,7 @@ app.post("/login", (req, res) => {
           const first_name = result[0].first_name;
           const last_name = result[0].last_name;
           const id = result[0].id;
-          const token = jwt.sign({ first_name, last_name, id }, "jwt-sample-secret-key", {
+          const token = jwt.sign({ first_name, last_name, id }, process.env.API_KEY, {
             expiresIn: "1d",
           });
           res.cookie("token", token, {
@@ -855,7 +854,7 @@ app.get("/orders", async (req, res) => {
 });
 
 app.post("/place-order", async (req, res) => {
-  const { items, addressInfo } = req.body;
+  const { items, addressInfo, payment_method } = req.body;
   const { address, zipCode, contactPerson, phoneNumber } = addressInfo;
   const status = "pending";
 
@@ -875,10 +874,11 @@ app.post("/place-order", async (req, res) => {
           phoneNumber,
           contactPerson,
           status,
+          payment_method,
         ];
 
         const insertQuery =
-          "INSERT INTO orders (order_id, product_id, user_id, quantity, delivery_address, phone_number, contact_person, status) VALUES (?)";
+          "INSERT INTO orders (order_id, product_id, user_id, quantity, delivery_address, phone_number, contact_person, status, payment_method) VALUES (?)";
         await executeQuery(insertQuery, [insertValues]);
 
         const deleteQuery = "DELETE FROM cart WHERE id = ?";
@@ -913,5 +913,5 @@ function executeQuery(query, values) {
     });
   });
 }
-const port = 8081;
+const port = process.env.PORT_CONNECTION;
 app.listen(port, () => console.log("Listening to port ", port));
