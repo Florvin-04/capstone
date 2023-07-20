@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import "./Login.scss";
 import axios from "axios";
-import { Route, useNavigate } from "react-router-dom";
+import { Route, useNavigate, Link } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 
 const Login = () => {
@@ -60,49 +61,71 @@ const Login = () => {
   };
 
   return (
-    <>
-      <form
-        className="login--form"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-      >
-        <div className="input__form--container">
-          <label htmlFor="email">Email: </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value={loginState.email}
-            onChange={handleChange}
-            // onBlur={handleBlur}
-          />
-
-          {/* {errors?.email && touched.email && <p>{errors.email}</p>} */}
-        </div>
-
-        <div className="input__form--container">
-          <label htmlFor="password">Password: </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            value={loginState.password}
-            onChange={handleChange}
-            // onBlur={handleBlur}
-          />
-          {/* {errors?.firstName && touched.firstName && <p>{errors.firstName}</p>} */}
-        </div>
-
-        {error && <p>{error}</p>}
-
-        <button
-          // disabled={isSubmitting}
-          type="submit"
+    <section className="login">
+      <div>
+        <h2>Login</h2>
+        <form
+          className="login--form"
+          onSubmit={handleSubmit}
+          autoComplete="off"
         >
-          Login
-        </button>
-      </form>
-    </>
+          <div className="input__form--container">
+            <input
+              className={error && "error__input"}
+              placeholder=""
+              type="email"
+              name="email"
+              id="email"
+              value={loginState.email}
+              onChange={handleChange}
+              // onBlur={handleBlur}
+            />
+
+            <label
+              className={error && "login__errorMessage"}
+              htmlFor="email"
+            >
+              Email{" "}
+            </label>
+            {/* {errors?.email && touched.email && <p>{errors.email}</p>} */}
+          </div>
+
+          <div className="input__form--container">
+            <input
+              className={error && "error__input"}
+              placeholder=""
+              type="password"
+              name="password"
+              id="password"
+              value={loginState.password}
+              onChange={handleChange}
+              // onBlur={handleBlur}
+            />
+            <label
+              className={error && "login__errorMessage"}
+              htmlFor="password"
+            >
+              Password{" "}
+            </label>
+            {/* {errors?.firstName && touched.firstName && <p>{errors.firstName}</p>} */}
+          </div>
+
+          {error && <p className="login__errorMessage">{error}</p>}
+
+          <button
+            // disabled={isSubmitting}
+            className="login__btn"
+            type="submit"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="signup__link">
+          Need an Account? <Link to='/register'>sign up</Link>
+        </p>
+      </div>
+    </section>
   );
 };
 

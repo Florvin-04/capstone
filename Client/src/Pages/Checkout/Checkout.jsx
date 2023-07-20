@@ -24,13 +24,27 @@ const paymentMethod = [
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { addresses, getTotal, checkoutItems, loggedInID, route, getAddress } = useGlobalContext();
+  const {
+    addresses,
+    getTotal,
+    checkoutItems,
+    loggedInID,
+    route,
+    getAddress,
+    fetchCartData,
+    cartData,
+  } = useGlobalContext();
 
   const [loading, setLoading] = useState(true);
   const [chekedProduct, setChekedProduct] = useState({
     ids: [...checkoutItems.checkout_cart.map((item) => item.id)],
     items: {},
   });
+
+  const [errorMessage, setErrorMessage] = useState({
+    noAddress: "",
+  });
+
   const [chosenAddress, setChosenAddress] = useState("");
   const [currentAddress, setCurrentAddress] = useState({
     ...initialAddressValues,
@@ -73,22 +87,22 @@ const Checkout = () => {
     }
   };
 
-  const fetchCartData = async () => {
-    try {
-      const response = await axios.get(`${route}/cart`, {
-        params: { user_id: loggedInID },
-      });
+  // const fetchCartData = async () => {
+  //   try {
+  //     const response = await axios.get(`${route}/cart`, {
+  //       params: { user_id: loggedInID },
+  //     });
 
-      if (response.data.Status === "success") {
-        setCheckoutData(response.data.Result);
-        setLoading(false);
-      } else {
-        console.log(response.data.Message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     if (response.data.Status === "success") {
+  //       setCheckoutData(response.data.Result);
+  //       setLoading(false);
+  //     } else {
+  //       console.log(response.data.Message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     displayDeliveryAddress();
@@ -99,7 +113,7 @@ const Checkout = () => {
     let result = {};
 
     checkoutItems.checkout_cart.forEach((item) => {
-      result[item.id] = { quantity: item.quantity, subtotal: item.subtotal };
+      result[item.id] = { subtotal: item.subtotal };
     });
 
     setChekedProduct((prevData) => ({
@@ -119,6 +133,10 @@ const Checkout = () => {
     if (chosenAddress === "") {
       return;
     }
+    setErrorMessage((prevData) => ({
+      ...prevData,
+      noAddress: "",
+    }));
 
     await updateDeliveryAddress();
     hasCurrentAddress();
@@ -145,6 +163,14 @@ const Checkout = () => {
   };
 
   async function placeOrder() {
+    if (hasCurrentAddress() === "false") {
+      setErrorMessage((prevData) => ({
+        ...prevData,
+        noAddress: "Add a delivery Address to Proceed",
+      }));
+      return;
+    }
+
     try {
       const response = await axios.post(`${route}/place-order`, {
         items: [...checkoutItems.checkout_cart.map((item) => item.id)],
@@ -179,16 +205,16 @@ const Checkout = () => {
 
   // console.log(hasCurrentAddress());
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
 
   return (
     <>
       {/* css in cartProduct */}
       <dialog
         ref={modalRef}
-        className="cart_modal"
+        className="cart_modal changeAddress__modal"
       >
         <form onSubmit={handleSubmitAddressForm}>
           {forms === "chooseAddress" && (
@@ -211,21 +237,16 @@ const Checkout = () => {
               ) : (
                 <h2>No address</h2>
               )}
+
               <button
+                className="addNewAddress--btn"
                 type="button"
                 onClick={() => setForms("newAddress")}
               >
-                New Address
+                + New Address
               </button>
-              <div>
-                <button
-                  type="sbmit"
-                  onClick={() => {
-                    document.body.classList.remove("modal-open");
-                  }}
-                >
-                  Submit
-                </button>
+
+              <div className="modal__submit--addressBtn">
                 <button
                   type="button"
                   onClick={() => {
@@ -235,6 +256,14 @@ const Checkout = () => {
                   }}
                 >
                   Cancel
+                </button>
+                <button
+                  type="sbmit"
+                  onClick={() => {
+                    document.body.classList.remove("modal-open");
+                  }}
+                >
+                  Submit
                 </button>
               </div>
             </div>
@@ -253,14 +282,14 @@ const Checkout = () => {
       <section className="checkout__section">
         Checkout Page
         {hasCurrentAddress() === "false" ? (
-          <button 
+          <button
             onClick={() => {
               getAddress();
               document.body.classList.add("modal-open");
               modalRef.current.showModal();
             }}
           >
-            address
+            Add Delivery Adress
           </button>
         ) : (
           <div className="shippingAddress">
@@ -281,32 +310,34 @@ const Checkout = () => {
               <p>
                 Addess: {currentAddress.address} | {currentAddress.zipCode}
               </p>
-              <p>Shipping Method: Cash on Delivery</p>
-              {chosentPaymentMethod}
+              {/* {chosentPaymentMethod} */}
               <div className="shipping__method">
-                {paymentMethod.map((payment, idx) => {
-                  return (
-                    <div key={idx}>
-                      <input
-                        disabled={!payment.available}
-                        type="radio"
-                        name="shipping_method"
-                        value={payment.method}
-                        id={payment.method}
-                        checked={chosentPaymentMethod === `${payment.method}`}
-                        onChange={(e) => setChosentPaymentMethod(e.target.value)}
-                      />
+                <p>Shipping Method: </p>
+                <div className="shipping__method--options">
+                  {paymentMethod.map((payment, idx) => {
+                    return (
+                      <div key={idx}>
+                        <input
+                          hidden
+                          disabled={!payment.available}
+                          type="radio"
+                          name="shipping_method"
+                          value={payment.method}
+                          id={payment.method}
+                          checked={chosentPaymentMethod === `${payment.method}`}
+                          onChange={(e) => setChosentPaymentMethod(e.target.value)}
+                        />
 
-                      <label htmlFor={payment.method}>{payment.method}</label>
-                    </div>
-                  );
-                })}
+                        <label htmlFor={payment.method}>{payment.method}</label>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
         )}
-
-        {checkoutData.map((product) => {
+        {cartData.map((product) => {
           if (chekedProduct.ids.includes(product.id)) {
             return (
               <CheckoutProduct
@@ -317,8 +348,11 @@ const Checkout = () => {
             );
           }
         })}
-        <p>total: {getTotal()}</p>
-        <button onClick={placeOrder}>Place Order</button>
+        <div className="place__order--wrapper">
+          <p>Total: {getTotal()}</p>
+          <button onClick={placeOrder}>Place Order</button>
+          {errorMessage.noAddress && <p>{errorMessage.noAddress}</p>}
+        </div>
       </section>
     </>
   );

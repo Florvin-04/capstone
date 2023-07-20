@@ -75,6 +75,7 @@ function AddUpdateAddress({ setForms, forms, editAddress }) {
         <div>
           <div className="input-field">
             <input
+              className={errors?.fullName && "input-field-errorMessage"}
               type="text"
               name="fullName"
               placeholder=""
@@ -90,6 +91,7 @@ function AddUpdateAddress({ setForms, forms, editAddress }) {
           <div className="input-field">
             <input
               type="text"
+              className={errors?.phoneNumber && "input-field-errorMessage"}
               name="phoneNumber"
               placeholder=""
               onChange={handleChange}
@@ -104,6 +106,7 @@ function AddUpdateAddress({ setForms, forms, editAddress }) {
           <div className="input-field">
             <textarea
               type="text"
+              className={errors?.completeAddress && "input-field-errorMessage"}
               name="completeAddress"
               placeholder=""
               onChange={handleChange}
@@ -118,6 +121,8 @@ function AddUpdateAddress({ setForms, forms, editAddress }) {
           <div className="input-field">
             <input
               type="text"
+              className={errors?.zipCode && "input-field-errorMessage"}
+
               placeholder=""
               name="zipCode"
               onChange={handleChange}
@@ -128,7 +133,7 @@ function AddUpdateAddress({ setForms, forms, editAddress }) {
 
           {errors?.zipCode && touched.zipCode && <p>{errors.zipCode}</p>}
         </div>
-        <div>
+        <div className="add-edit__btn">
           <button
             type="button"
             onClick={() => setForms("chooseAddress")}

@@ -844,7 +844,8 @@ app.get("/orders", async (req, res) => {
   const { user_id } = req.query;
 
   try {
-    const selectQuery = "SELECT * FROM `orders` WHERE user_id = ?";
+    const selectQuery =
+      "SELECT order_id, p.id, quantity, delivery_address, phone_number, contact_person, status, payment_method, title, description, category, image, price FROM orders AS o JOIN products AS p ON p.id = o.product_id WHERE user_id = ? ORDER BY added_at DESC";
     const result = await executeQuery(selectQuery, [user_id]);
 
     return res.json({ Status: "success", Message: "fetched successfully", Result: result });
@@ -856,7 +857,7 @@ app.get("/orders", async (req, res) => {
 app.post("/place-order", async (req, res) => {
   const { items, addressInfo, payment_method } = req.body;
   const { address, zipCode, contactPerson, phoneNumber } = addressInfo;
-  const status = "pending";
+  const status = "Pending";
 
   try {
     for (const item of items) {

@@ -1,0 +1,42 @@
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
+.address__radio--btn:checked {
+  + .modal__address--container > .circle__address--checked {
+    background-color: red;
+    outline-offset: 2px;
+  }
+}
+
+.modal__address--container {
+  //   cursor: pointer;
+  margin-bottom: 1rem;
+  padding-left: 1em;
+  outline: 1px solid red;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  border-radius: 0.1rem;
+
+  .circle__address--checked {
+    margin-top: .4rem;
+    padding: .5em;
+    width: 18px;
+    height: 18px;
+    border-radius: 100%;
+  
+    outline: 2px solid rgba(0,0,0,.26);
+    align-self: flex-start;
+  }
+
+  > label {
+    cursor: pointer;
+    width: 100%;
+  }
+
+  > button {
+    align-self: flex-start;
+    background-color: transparent;
+    border-color: transparent;
+  }
+}

@@ -1,8 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import "./Orders.scss";
 import axios from "axios";
 import { useGlobalContext } from "../../AppContext/AppContext";
+import OrderProduct from "../../Components/OrderProduct/OrderProduct";
 function Orders() {
   const { loggedInID, route } = useGlobalContext();
+
+  const [orders, setOrders] = useState();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   async function getOrders() {
     try {
@@ -13,6 +19,8 @@ function Orders() {
       });
 
       if (response.data.Status == "success") {
+        setOrders(response.data.Result);
+        setIsLoading(false);
         console.log(response);
         return;
       }
@@ -27,9 +35,21 @@ function Orders() {
     getOrders();
   }, [loggedInID]);
 
+  if (isLoading) {
+    return <p>loading</p>;
+  }
+
   return (
     <>
       <div>Orders</div>
+
+      <div className="orders__item--container">
+        {orders.map((order, idx) => {
+          return (
+           <OrderProduct key={order.order_id} {...order}/>
+          );
+        })}
+      </div>
     </>
   );
 }

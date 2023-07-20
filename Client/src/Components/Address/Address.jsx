@@ -1,20 +1,37 @@
 import { useEffect, useState } from "react";
+import "./Address.scss";
 
 function Address({ address, idx, handleChangeAddress, chosenAddress, setForms, setEditAddress }) {
   return (
     <>
-      <div>
-        <input
-          type="radio"
-          name="address"
-          id={`address${idx}`}
-          value={`${address.address}, ${address.phone_number}, ${address.zip_code}, ${address.contact_person}`}
-          checked={
-            chosenAddress ==
-            `${address.address}, ${address.phone_number}, ${address.zip_code}, ${address.contact_person}`
-          }
-          onChange={handleChangeAddress}
-        />
+      <input
+        className="address__radio--btn"
+        hidden
+        type="radio"
+        name="address"
+        id={`address${idx}`}
+        value={`${address.address}, ${address.phone_number}, ${address.zip_code}, ${address.contact_person}`}
+        checked={
+          chosenAddress ==
+          `${address.address}, ${address.phone_number}, ${address.zip_code}, ${address.contact_person}`
+        }
+        onChange={handleChangeAddress}
+      />
+      <div className="modal__address--container">
+        <div className="circle__address--checked">
+          
+        </div>
+        <label
+          className=""
+          htmlFor={`address${idx}`}
+        >
+          <p>
+            {address.contact_person} | {address.phone_number}
+          </p>
+          <p>
+            {address.address}, {address.zip_code} 
+          </p>
+        </label>
         <button
           type="button"
           onClick={() => {
@@ -31,14 +48,6 @@ function Address({ address, idx, handleChangeAddress, chosenAddress, setForms, s
         >
           edit
         </button>
-        <label htmlFor={`address${idx}`}>
-          <p>
-            {address.contact_person} | {address.phone_number}
-          </p>
-          <p>
-            {address.address} | {address.zip_code}
-          </p>
-        </label>
       </div>
     </>
   );

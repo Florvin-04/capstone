@@ -1,6 +1,7 @@
 import { useEffect } from "react";
+import "./Register.scss";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { registerSchema } from "../../Validation/Validation";
 import { useGlobalContext } from "../../AppContext/AppContext";
@@ -106,86 +107,147 @@ const Register = () => {
   // console.log(errors);
 
   return (
-    <>
-      <form
-        className="rergister--form"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-      >
-        <div className="input__form--container">
-          <label htmlFor="email">Email: </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value={values.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-
-          {errors?.email && touched.email && <p>{errors.email}</p>}
-        </div>
-
-        <div className="input__form--container">
-          <label htmlFor="firstName">First Name: </label>
-          <input
-            type="text"
-            name="firstName"
-            id="firstName"
-            value={values.firstName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors?.firstName && touched.firstName && <p>{errors.firstName}</p>}
-        </div>
-
-        <div className="input__form--container">
-          <label htmlFor="lastName">Last Name: </label>
-          <input
-            type="text"
-            name="lastName"
-            id="lastName"
-            value={values.lastName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors?.lastName && touched.lastName && <p>{errors.lastName}</p>}
-        </div>
-
-        <div className="input__form--container">
-          <label htmlFor="password">Password: </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            value={values.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors?.password && touched.password && <p>{errors.password}</p>}
-        </div>
-
-        <div className="input__form--container">
-          <label htmlFor="confirmPassword">Confirm Password: </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            id="confirmPassword"
-            value={values.confirmPassword}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors?.confirmPassword && touched.confirmPassword && <p>{errors.confirmPassword}</p>}
-        </div>
-
-        <button
-          disabled={isSubmitting}
-          type="submit"
+    <section className="register">
+      <div>
+        <h2>Register</h2>
+        <form
+          className="rergister--form"
+          onSubmit={handleSubmit}
+          autoComplete="off"
         >
-          Register
-        </button>
-      </form>
-    </>
+          <div>
+            <div className="input__form--container">
+              <input
+                className={errors?.email && touched.email && "error__input"}
+                placeholder=""
+                type="email"
+                name="email"
+                id="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <label
+                className={errors?.email && touched.email && "lable__error"}
+                htmlFor="email"
+              >
+                Email
+              </label>
+            </div>
+            {errors?.email && touched.email && (
+              <p style={{ color: "red", fontSize: ".9rem" }}>{errors.email}</p>
+            )}
+          </div>
+
+          <div>
+            <div className="input__form--container">
+              <input
+                className={errors?.firstName && touched.firstName && "error__input"}
+                placeholder=""
+                type="text"
+                name="firstName"
+                id="firstName"
+                value={values.firstName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <label
+                className={errors?.firstName  && touched.firstName && "lable__error"}
+                htmlFor="firstName"
+              >
+                First Name:{" "}
+              </label>
+            </div>
+            {errors?.firstName && touched.firstName && (
+              <p style={{ color: "red", fontSize: ".9rem" }}>{errors.firstName}</p>
+            )}
+          </div>
+
+          <div>
+            <div className="input__form--container">
+              <input
+                className={errors?.lastName && touched.lastName && "error__input"}
+                placeholder=""
+                type="text"
+                name="lastName"
+                id="lastName"
+                value={values.lastName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <label
+                className={errors?.lastName && touched.lastName && "lable__error"}
+                htmlFor="lastName"
+              >
+                Last Name:{" "}
+              </label>
+            </div>
+            {errors?.lastName && touched.lastName && (
+              <p style={{ color: "red", fontSize: ".9rem" }}>{errors.lastName}</p>
+            )}
+          </div>
+
+          <div>
+            <div className="input__form--container">
+              <input
+                className={errors?.password && touched.password && "error__input"}
+                placeholder=""
+                type="password"
+                name="password"
+                id="password"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <label
+                className={errors?.password &&  touched.password &&"lable__error"}
+                htmlFor="password"
+              >
+                Password:{" "}
+              </label>
+            </div>
+            {errors?.password && touched.password && (
+              <p style={{ color: "red", fontSize: ".9rem" }}>{errors.password}</p>
+            )}
+          </div>
+
+          <div>
+            <div className="input__form--container">
+              <input
+                className={errors?.confirmPassword && touched.confirmPassword && "error__input"}
+                placeholder=""
+                type="password"
+                name="confirmPassword"
+                id="confirmPassword"
+                value={values.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <label
+                className={errors?.confirmPassword && touched.confirmPassword && "lable__error"}
+                htmlFor="confirmPassword"
+              >
+                Confirm Password:{" "}
+              </label>
+            </div>
+            {errors?.confirmPassword && touched.confirmPassword && (
+              <p style={{ color: "red", fontSize: ".9rem" }}>{errors.confirmPassword}</p>
+            )}
+          </div>
+
+          <button
+            className="register--btn"
+            disabled={isSubmitting}
+            type="submit"
+          >
+            Register
+          </button>
+        </form>
+        <p className="login__link">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+      </div>
+    </section>
   );
 };
 

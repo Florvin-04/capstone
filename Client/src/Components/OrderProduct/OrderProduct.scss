@@ -1,0 +1,129 @@
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
+* {
+  // outline: 1px solid red;
+}
+.orderProduct {
+  margin-top: 1rem;
+  outline: 1px solid red;
+
+  @include breakpoint("medium") {
+    // background-color: red;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 0.5em;
+  }
+
+  &__container {
+    outline: 1px solid red;
+    display: flex;
+    gap: 1.5rem;
+    // grid-template-columns: 1fr 2fr;
+
+    &--description {
+      display: grid;
+      width: 100%;
+      outline: 1px solid red;
+
+      @include breakpoint("medium") {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      > div:first-child {
+        //
+        @include breakpoint("medium") {
+          align-self: center;
+          outline: 1px solid red;
+          display: flex;
+          flex-direction: row-reverse;
+          align-items: center;
+
+          width: 100%;
+
+          //   display: grid;
+
+          //   grid-template-columns: 1fr 2fr;
+
+          .orderProduct__category {
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+          }
+
+          .orderProduct__title {
+            outline: 1px solid red;
+            width: 100%;
+            height: 3.125rem;
+            //   width: 85%;
+            color: black;
+            font-size: 1rem;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: hidden;
+            display: -webkit-box;
+            text-overflow: ellipsis;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+
+            // display: flex;
+            // align-items: center;
+
+            @include breakpoint("large") {
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
+      }
+
+      > div:last-child {
+        outline: 1px solid red;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        @include breakpoint("medium") {
+          align-self: center;
+          width: 57%;
+        }
+      }
+    }
+  }
+
+  &__footer {
+    padding-block: 0.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    > div:first-child {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      > p {
+        //   color: red;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        //   gap: .5rem;
+        column-gap: 0.5rem;
+
+        > span {
+          // outline: 1px solid red;
+          // display: block;
+          // width: 100px;
+          // max-width: 100px;
+        }
+      }
+    }
+
+    > div:last-child {
+      // display: ;
+    }
+  }
+}

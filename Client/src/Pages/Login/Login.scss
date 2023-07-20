@@ -1,0 +1,67 @@
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
+
+.login {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  outline: 1px solid red;
+
+  > div {
+    background-color: white;
+    border-radius: 0.4rem;
+    padding: 1em;
+
+    > h2 {
+      text-align: center;
+    }
+  }
+
+  form {
+    display: grid;
+    .input__form--container {
+      margin-top: 1rem;
+      position: relative;
+
+      .error__input {
+        border: 1px solid red;
+      }
+
+      > input {
+        padding-top: 0.4em;
+        &:focus ~ label,
+        &:not(:placeholder-shown) ~ label {
+          font-size: 0.85rem;
+          top: 0%;
+          background-color: white;
+        }
+
+        &:focus-visible {
+          outline: 1px solid transparent;
+        }
+      }
+
+      > label {
+        top: 50%;
+        left: 10%;
+        transform: translate(0%, -50%);
+        position: absolute;
+
+        transition: 0.1s ease;
+      }
+    }
+
+    .login__errorMessage {
+      color: red;
+      font-size: 0.9rem;
+    }
+
+    .login__btn {
+      margin-top: 1rem;
+    }
+  }
+  .signup__link {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+}

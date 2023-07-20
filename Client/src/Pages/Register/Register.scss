@@ -1,0 +1,71 @@
+.register {
+  display: grid;
+  place-content: center;
+  min-height: 100vh;
+
+  > div {
+    background-color: white;
+    padding: 1em;
+    width: 20rem;
+    border-radius: 0.4rem;
+
+    > h2 {
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    > form {
+      display: grid;
+
+      .input__form--container {
+        margin-top: 1rem;
+        position: relative;
+
+        > input {
+          width: 100%;
+
+          padding-top: 0.4em;
+          &:focus ~ label,
+          &:not(:placeholder-shown) ~ label {
+            font-size: 0.85rem;
+            top: 0%;
+            background-color: white;
+          }
+
+          &:focus-visible {
+            outline: 1px solid transparent;
+          }
+        }
+
+        > label {
+          pointer-events: none;
+          top: 50%;
+          left: 10%;
+          transform: translate(0%, -50%);
+          position: absolute;
+
+          transition: 0.1s ease;
+        }
+      }
+
+      .error__input {
+        border: 1px solid red;
+      }
+
+      .lable__error {
+        color: red;
+      }
+
+      .register--btn{
+        margin-top: 1rem;
+      }
+    }
+
+    .login__link {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: .9rem;
+
+    }
+  }
+}

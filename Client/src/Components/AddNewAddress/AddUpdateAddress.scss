@@ -1,6 +1,7 @@
 .addNewAddress {
   //
   > div {
+    // outline: 1px solid red;
     + div {
       margin-top: 1.1rem;
     }
@@ -8,15 +9,24 @@
     .input-field {
       position: relative;
 
+      .input-field-errorMessage {
+        border: 1px solid red;
+      }
+
       > *:not(span) {
         width: 100%;
         padding-top: 0.3em;
+        padding-left: 0.4em;
         &:focus ~ span,
         &:not(:placeholder-shown) ~ span {
           font-size: 0.85rem;
           top: 0%;
           // transform: translate(0%, -150%);
           background-color: white;
+        }
+
+        &:focus-visible {
+          outline: 1px solid transparent;
         }
       }
       > span {
@@ -28,6 +38,19 @@
         transform: translate(0%, -50%);
         transition: 0.1s ease;
       }
+
+
     }
+
+    p{
+      color: red;
+      font-size: .9rem;
+    }
+  }
+
+  .add-edit__btn {
+    display: flex;
+    justify-content: end;
+    gap: 0.5em;
   }
 }
