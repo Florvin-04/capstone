@@ -9,6 +9,14 @@ export const AppProvider = ({ children }) => {
   const location = useLocation();
   const route = "http://localhost:8081";
   const [products, setProducts] = useState([]);
+  const [productFilter, setProductFilter] = useState({
+    search: "",
+    minPrice: "",
+    maxPrice: "",
+    priceSort: "",
+    categorySort: "",
+  });
+
   const [cartData, setCartData] = useState([]);
   const [addresses, setAddresses] = useState([]);
 
@@ -39,20 +47,41 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("reciept_items", JSON.stringify(checkoutItems.checkout_cart));
   }, [checkoutItems]);
-
   axios.defaults.withCredentials = true;
+
+  async function getProducts() {
+    try {
+      const response = await axios.get(`${route}/products`, {
+        params: {
+          filters: productFilter,
+        },
+      });
+
+      if (response.data.Status === "Success") {
+        setProducts(response.data.Result);
+      } else {
+        console.log(response.data.Message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
-    // get all products
-    axios
-      .get(`${route}/products`)
-      .then((res) => {
-        if (res.data.Status === "Success") {
-          setProducts(res.data.Result);
-        } else {
-          console.log(res.data.Message);
-        }
-      })
-      .catch((err) => console.log(err));
+    getProducts();
+  }, [loggedInID, productFilter]);
+
+  useEffect(() => {
+    // axios
+    //   .get(`${route}/products`)
+    //   .then((res) => {
+    //     if (res.data.Status === "Success") {
+    //       setProducts(res.data.Result);
+    //     } else {
+    //       console.log(res.data.Message);
+    //     }
+    //   })
+    //   .catch((err) => console.log(err));
 
     //get authetication logged in
 
@@ -158,6 +187,7 @@ export const AppProvider = ({ children }) => {
         isCartShown,
         hideCart,
         showCart,
+        setProductFilter,
       }}
     >
       {children}

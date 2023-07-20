@@ -1,5 +1,23 @@
+@use "../../FunctionSASS/FunctionSASS.scss" as *;
+
+
+
+.products__container{
+
+  >div{
+    display: grid;
+   grid-template-columns: 250px 1fr;
+  }
+}
+
+
 .products {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, 225px);
+  place-content: center;
+
+  @include breakpoint("large") {
+    place-content: unset;
+  }
 }

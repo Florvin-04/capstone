@@ -325,11 +325,50 @@ app.post("/login", (req, res) => {
 // });
 
 app.get("/products", (req, res) => {
-  const sql = "SELECT * FROM products";
+  const { filters } = req.query;
+  let sql = "SELECT * FROM products";
+
+  let conditions = [];
+
+  if (filters.search.trim() !== "") {
+    // sql += ` WHERE LOWER(title) LIKE '%${filters.search}%'`;
+
+    conditions.push(`LOWER(title) LIKE '%${filters.search}%'`);
+  }
+
+  if (filters.categorySort != "") {
+    conditions.push(`(category = "${filters.categorySort}" OR "${filters.categorySort}" = "All")`);
+  }
+
+  if (filters.minPrice != "" && filters.maxPrice != "") {
+    conditions.push(`price BETWEEN ${filters.minPrice} AND ${filters.maxPrice}`);
+  } else {
+    if (filters.minPrice != "") {
+      conditions.push(`price >= ${filters.minPrice}`);
+    }
+
+    if (filters.maxPrice != "") {
+      conditions.push(`price <= ${filters.maxPrice}`);
+    }
+  }
+
+  if (conditions.length > 0) {
+    sql += ` WHERE ${conditions.join(" AND ")}`;
+    console.log(sql);
+  }
+
+  if (filters.priceSort != "") {
+    sql += ` ORDER BY price ${filters.priceSort}`;
+  }
 
   db.query(sql, (err, result) => {
     if (err) return res.json({ Error: "Get Products Error" });
-    return res.json({ Status: "Success", Result: result });
+
+    if (result) {
+      return res.json({ Status: "Success", Result: result });
+    } else {
+      return res.json({ Status: "Error", Message: "Error" });
+    }
   });
 });
 

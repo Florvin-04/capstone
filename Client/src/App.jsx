@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.scss";
 import Products from "./Pages/Products/Products";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./Components/Layout/Layout";
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
@@ -13,6 +13,7 @@ import Cart from "./Pages/Cart/Cart";
 import Checkout from "./Pages/Checkout/Checkout";
 import Orders from "./Pages/Orders/Orders";
 import "react-toastify/dist/ReactToastify.css";
+import NotFound from "./Pages/NotFound/NotFound";
 
 function App() {
   return (
@@ -57,9 +58,20 @@ function App() {
             path="/login"
             element={<Login />}
           />
+
           <Route
             path="/register"
             element={<Register />}
+          />
+
+          <Route
+            path="*"
+            element={<Navigate to="/404" />}
+          />
+
+          <Route
+            path="/404"
+            element={<NotFound />}
           />
         </Routes>
         <Cart />
