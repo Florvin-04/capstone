@@ -1,6 +1,10 @@
 @use "../../FunctionSASS/FunctionSASS.scss" as *;
 .cardProduct {
-  outline: 1px solid red;
+  // outline: 1px solid red;
+  background-color: white;
+  border: 1px solid hsl(var(--accent-clr) / 0.3);
+  padding: 0.5em;
+
 
   &:hover {
     transform: scale(1.1);
@@ -8,23 +12,23 @@
   }
 
   &__image--container {
-    outline: 2px solid red;
+    // outline: 2px solid red;
     display: flex;
     justify-content: center;
   }
 
   img {
     width: rem(150);
-    outline: 1px solid red;
+    // outline: 1px solid red;
     display: flex;
     justify-content: center;
-    
+
     aspect-ratio: 1/1.3;
   }
 
   .cardProduct__info--category {
     font-size: 0.9rem;
-    color: black;
+    color: hsl(var(--txt-clr) / .6);
     padding: 0.5em;
   }
 
@@ -34,9 +38,10 @@
     padding-inline: 0.5em;
 
     &--title {
-      outline: 1px solid red;
+      // outline: 1px solid red;
       height: rem(50);
-      color: black;
+      color: hsl(var(--txt-clr));
+      font-weight: 501;
       font-size: 1.1rem;
       word-wrap: break-word;
       white-space: normal;
@@ -48,7 +53,8 @@
     }
 
     &--price {
-      color: black;
+      color: hsl(var(--txt-clr));
+      // font-weight: 600;
       font-size: 1.1rem;
     }
   }

@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../AppContext/AppContext";
 import CheckoutProduct from "../../Components/CheckoutProduct/CheckoutProduct";
 import Address from "../../Components/Address/Address";
 import AddUpdateAddress from "../../Components/AddNewAddress/AddUpdateAddress";
+import PageLoading from "../../Components/Loaders/PageLoading";
 
 const initialAddressValues = {
   address: "",
@@ -107,6 +108,10 @@ const Checkout = () => {
   useEffect(() => {
     displayDeliveryAddress();
     fetchCartData();
+
+    setTimeout(() => {
+      setLoading(false);
+    }, [2000]);
   }, [loggedInID]);
 
   useEffect(() => {
@@ -183,7 +188,7 @@ const Checkout = () => {
         localStorage.removeItem("reciept_items");
 
         await new Promise((resolve) => {
-          setLoading(true);
+          // setLoading(true);
           setTimeout(resolve, 2000);
         });
 
@@ -205,9 +210,13 @@ const Checkout = () => {
 
   // console.log(hasCurrentAddress());
 
-  // if (loading) {
-  //   return <p>Loading...</p>;
-  // }
+  if (loading) {
+    return (
+      <div className="page__loading">
+        <PageLoading />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -248,6 +257,7 @@ const Checkout = () => {
 
               <div className="modal__submit--addressBtn">
                 <button
+                  className="changeAddress__btn--cancel"
                   type="button"
                   onClick={() => {
                     document.body.classList.remove("modal-open");
@@ -258,6 +268,7 @@ const Checkout = () => {
                   Cancel
                 </button>
                 <button
+                  className="changeAddress__btn--submit"
                   type="sbmit"
                   onClick={() => {
                     document.body.classList.remove("modal-open");
@@ -280,7 +291,7 @@ const Checkout = () => {
       </dialog>
 
       <section className="checkout__section">
-        Checkout Page
+        <h2 className="page__title">Checkout</h2>
         {hasCurrentAddress() === "false" ? (
           <button
             onClick={() => {
@@ -294,21 +305,29 @@ const Checkout = () => {
         ) : (
           <div className="shippingAddress">
             <h2>Shipping Address</h2>
+
             <button
+              className="changeAddress"
               onClick={() => {
                 getAddress();
                 document.body.classList.add("modal-open");
                 modalRef.current.showModal();
               }}
             >
-              address
+              Change Address
             </button>
             <div className="shippingAddress__information">
               <p>
-                Contact Person: {currentAddress.contactPerson} | {currentAddress.phoneNumber}
+                Contact Person:{" "}
+                <span>
+                  {currentAddress.contactPerson} | {currentAddress.phoneNumber}
+                </span>
               </p>
               <p>
-                Addess: {currentAddress.address} | {currentAddress.zipCode}
+                Delivery Address:{" "}
+                <span>
+                  {currentAddress.address} | {currentAddress.zipCode}
+                </span>
               </p>
               {/* {chosentPaymentMethod} */}
               <div className="shipping__method">
@@ -337,21 +356,23 @@ const Checkout = () => {
             </div>
           </div>
         )}
-        {cartData.map((product) => {
-          if (chekedProduct.ids.includes(product.id)) {
-            return (
-              <CheckoutProduct
-                key={product.id}
-                product={product}
-                chekedProduct={chekedProduct}
-              />
-            );
-          }
-        })}
-        <div className="place__order--wrapper">
-          <p>Total: {getTotal()}</p>
-          <button onClick={placeOrder}>Place Order</button>
-          {errorMessage.noAddress && <p>{errorMessage.noAddress}</p>}
+        <div className="checkoutProduct__wrapper">
+          {cartData.map((product) => {
+            if (chekedProduct.ids.includes(product.id)) {
+              return (
+                <CheckoutProduct
+                  key={product.id}
+                  product={product}
+                  chekedProduct={chekedProduct}
+                />
+              );
+            }
+          })}
+          <div className="place__order--wrapper">
+            <p>Total: {getTotal()}</p>
+            <button onClick={placeOrder}>Place Order</button>
+            {errorMessage.noAddress && <p>{errorMessage.noAddress}</p>}
+          </div>
         </div>
       </section>
     </>

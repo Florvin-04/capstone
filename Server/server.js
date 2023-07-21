@@ -376,8 +376,10 @@ app.get("/cart", async (req, res) => {
   const { user_id } = req.query;
 
   try {
+    // const selectQuery =
+    //   "SELECT c.id, added_at, c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ORDER BY `c`.`added_at` DESC";
     const selectQuery =
-      "SELECT c.id, added_at, c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ORDER BY `c`.`added_at` DESC";
+      "SELECT c.id, added_at, c.product_id, c.user_id, c.quantity, p.title, p.category, p.image, p.price FROM cart as c JOIN users as u ON c.user_id = u.id JOIN products as p ON p.id = c.product_id WHERE c.user_id = ? ORDER BY `c`.`updated_at` DESC";
 
     const selectResult = await executeQuery(selectQuery, [user_id]);
 
@@ -390,7 +392,7 @@ app.get("/cart", async (req, res) => {
       });
     }
   } catch (error) {
-    return res.json({ Status: "error", Message: error.message });
+    return res.json({ Status: "error", Message: error.err });
   }
 
   // const sql =

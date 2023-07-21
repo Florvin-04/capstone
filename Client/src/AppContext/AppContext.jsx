@@ -119,7 +119,7 @@ export const AppProvider = ({ children }) => {
         console.log(response.data.Message);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.Message);
     }
   };
 

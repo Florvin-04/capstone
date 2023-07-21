@@ -25,10 +25,10 @@ function Address({ address, idx, handleChangeAddress, chosenAddress, setForms, s
           className=""
           htmlFor={`address${idx}`}
         >
-          <p>
+          <p className="contactPerson">
             {address.contact_person} | {address.phone_number}
           </p>
-          <p>
+          <p className="deliveryAddress">
             {address.address}, {address.zip_code} 
           </p>
         </label>

@@ -1,10 +1,13 @@
 @use "../../FunctionSASS/FunctionSASS.scss" as *;
-* {
-  // outline: 1px solid red;
-}
+
 .orderProduct {
   margin-top: 1rem;
-  outline: 1px solid red;
+  // outline: 1px solid red;
+  background-color: white;
+
+  padding: 1em;
+
+  border: 2px solid hsl(var(--accent-clr) / 0.1);
 
   @include breakpoint("medium") {
     // background-color: red;
@@ -14,11 +17,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-block: 0.5em;
+    padding-bottom: 0.5em;
+
+    .order__id {
+      > span:first-child {
+        color: hsl(var(--accent-clr) / 0.9);
+        font-weight: 600;
+      }
+      > span:last-child {
+        color: hsl(var(--txt-clr));
+        font-weight: 600;
+      }
+    }
+
+    .order__status {
+      color: hsl(var(--txt-clr) / 0.8);
+      font-weight: 600;
+    }
   }
 
   &__container {
-    outline: 1px solid red;
+    // outline: 1px solid red;
+    padding-block: 1em;
+
+    border-block: 1px solid hsl(var(--txt-clr));
+
     display: flex;
     gap: 1.5rem;
     // grid-template-columns: 1fr 2fr;
@@ -26,7 +49,7 @@
     &--description {
       display: grid;
       width: 100%;
-      outline: 1px solid red;
+      // outline: 1px solid red;
 
       @include breakpoint("medium") {
         display: flex;
@@ -37,58 +60,80 @@
         //
         @include breakpoint("medium") {
           align-self: center;
-          outline: 1px solid red;
+          // outline: 1px solid red;
           display: flex;
           flex-direction: row-reverse;
           align-items: center;
 
           width: 100%;
+        }
 
-          //   display: grid;
+        .orderProduct__title {
+          // outline: 1px solid red;
+          width: 100%;
+          height: 3.125rem;
+          //   width: 85%;
+          font-size: 1rem;
+          word-wrap: break-word;
+          white-space: normal;
+          overflow: hidden;
+          display: -webkit-box;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
 
-          //   grid-template-columns: 1fr 2fr;
+          color: hsl(var(--txt-clr));
+          // font-weight: 600;
+          font-size: 1.1rem;
 
-          .orderProduct__category {
-            font-size: 0.9rem;
+          @include breakpoint("large") {
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        .orderProduct__category {
+          text-transform: uppercase;
+          color: hsl(var(--txt-clr));
+
+          font-size: 0.8rem;
+          font-weight: 600;
+
+          @include breakpoint("medium") {
             width: 100%;
             text-align: center;
-          }
-
-          .orderProduct__title {
-            outline: 1px solid red;
-            width: 100%;
-            height: 3.125rem;
-            //   width: 85%;
-            color: black;
-            font-size: 1rem;
-            word-wrap: break-word;
-            white-space: normal;
-            overflow: hidden;
-            display: -webkit-box;
-            text-overflow: ellipsis;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-
-            // display: flex;
-            // align-items: center;
-
-            @include breakpoint("large") {
-              display: flex;
-              align-items: center;
-            }
+            color: hsl(var(--txt-clr));
           }
         }
       }
 
       > div:last-child {
-        outline: 1px solid red;
+        // outline: 1px solid red;
         width: 100%;
         display: flex;
         justify-content: space-between;
+        align-items: baseline;
 
         @include breakpoint("medium") {
           align-self: center;
           width: 57%;
+        }
+
+        .orderProduct__price {
+          color: hsl(var(--accent-clr) / 0.9);
+          font-weight: 600;
+        }
+
+        .orderProduct__subtotal {
+          color: hsl(var(--accent-clr));
+          font-weight: 600;
+          font-size: 1.1rem;
+        }
+
+        .orderProduct__quantity {
+          color: hsl(var(--accent-clr));
+          font-weight: 600;
+          // font-size: rem(16);
         }
       }
     }
@@ -113,17 +158,28 @@
         //   gap: .5rem;
         column-gap: 0.5rem;
 
-        > span {
+        > span:first-child {
+          color: hsl(var(--txt-clr) / 0.8);
+          font-weight: 600;
+        }
+
+        > span:last-child {
           // outline: 1px solid red;
           // display: block;
           // width: 100px;
           // max-width: 100px;
+          font-weight: 600;
+          color: hsl(var(--txt-clr));
         }
       }
     }
 
     > div:last-child {
-      // display: ;
+      //
+      .orderPaymentMethod {
+        color: hsl(var(--txt-clr) / 0.7);
+        font-weight: 600;
+      }
     }
   }
 }

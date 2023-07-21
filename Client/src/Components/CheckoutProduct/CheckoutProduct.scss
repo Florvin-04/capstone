@@ -1,8 +1,19 @@
 @use "../../FunctionSASS/FunctionSASS.scss" as *;
 
 .checkoutCard__wrapper {
+  + .checkoutCard__wrapper {
+    margin-top: 1rem;
+
+    // border-top: 1px solid hsl(var(--txt-clr));
+  }
+
+  > div {
+    border-bottom: 1px solid hsl(var(--txt-clr));
+    padding-bottom: 0.5em;
+    padding-inline: 0.5em;
+  }
   .checkoutCard {
-    outline: 1px solid red;
+    padding: 0.6em;
     display: flex;
     gap: 3rem;
     align-items: center;
@@ -38,14 +49,31 @@
         }
 
         .checkoutCard__description--category {
-          //
+          text-transform: uppercase;
+          color: hsl(var(--txt-clr) / 0.9);
+          font-size: 0.9rem;
+          // font-weight: 600;
           @include breakpoint("medium") {
             align-self: center;
             justify-self: end;
+            font-weight: 600;
           }
         }
 
         .checkoutCard__description--title {
+          color: hsl(var(--txt-clr));
+
+          font-size: 1.2rem;
+          width: min(250px, 100%);
+          overflow: hidden;
+          max-height: 3.5rem;
+          text-overflow: ellipsis;
+          word-break: word;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          // font-weight: 600;
+
           @include breakpoint("medium") {
             // background-color: red;
             grid-row: 1 / 1;
@@ -64,23 +92,24 @@
           justify-content: space-around;
           width: 100%;
         }
-      }
 
-      .checkoutCard__description--title {
-        font-size: 1.2rem;
-        width: min(250px, 100%);
-        overflow: hidden;
-        max-height: 3.5rem;
-        text-overflow: ellipsis;
-        word-break: word;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        .checkoutCard__description--price {
+          color: hsl(var(--accent-clr));
+          font-weight: 600;
+          letter-spacing: rem(1);
+          
+        }
+
+        .checkoutCard__description--quantity {
+          color: hsl(var(--txt-clr) / 0.8);
+          font-weight: 600;
+        }
       }
     }
   }
   .checkoutCard__subtotal {
     text-align: right;
-    // color: red;
+    color: hsl(var(--accent-clr));
+    font-weight: 600;
   }
 }

@@ -8,8 +8,7 @@ import { BsCartPlus } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 
 const DetailedProduct = () => {
-  const { products, route, loggedInID, fetchCartData, toPHCurrency } =
-    useGlobalContext();
+  const { products, route, loggedInID, fetchCartData, toPHCurrency } = useGlobalContext();
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,8 +120,9 @@ const DetailedProduct = () => {
                   <div>
                     <p className="detailedProduct__info--category">{product.category}</p>
                     <p className="detailedProduct__info--title">{product.title}</p>
-                    <p className="detailedProduct__info--description">{product.description}</p>
+                    <p>rate</p>
                     <p className="detailedProduct__info--price">{toPHCurrency(product.price)}</p>
+                    <p className="detailedProduct__info--description">{product.description}</p>
                   </div>
                   <form onSubmit={handleSubmit}>
                     <div className="form__buttons">
@@ -180,14 +180,13 @@ const DetailedProduct = () => {
                           />
                         </svg>
                       </button>
-
                     </div>
 
                     <div className="form__submit--btn">
                       <button
                         disabled={isLoading}
                         type="submit"
-                        className="submit_btn"
+                        className="addToCart_btn"
                       >
                         {isLoading ? (
                           <>
@@ -205,7 +204,7 @@ const DetailedProduct = () => {
                           </>
                         )}
                       </button>
-                      <button disabled={isLoading}>Buy Now</button>
+                      <button className="buyNow_btn" disabled={isLoading}>Buy Now</button>
                     </div>
                   </form>
                 </div>

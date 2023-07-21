@@ -1,71 +1,80 @@
 @use "../../FunctionSASS/FunctionSASS.scss" as *;
 
 .header {
-  outline: 1px solid red;
-  padding-block: 1em;
+  background-color: white;
+  > div {
+    padding: 1em;
+    outline: 1px solid red;
+    padding-block: 1em;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  .navigation {
-    outline: 2px solid red;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: space-between;
 
-    &__list {
-      font-size: 1.2rem;
+    .navigation {
+      outline: 2px solid red;
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
 
-      .cart-btn {
-        background-color: transparent;
-        border-color: transparent;
-     
+      &__list {
+        font-size: 1.2rem;
         display: flex;
         align-items: center;
+        gap: 1rem;
+
+        .cart-btn {
+          background-color: transparent;
+          border-color: transparent;
+
+          display: flex;
+          align-items: center;
+        }
+
+        &--link {
+          color: hsl(var(--txt-clr));
+        }
       }
     }
-  }
 
-  .user__profile {
-    font-size: 1.2rem;
+    .user__profile {
+      font-size: 1.2rem;
 
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
 
-    &:hover > .user__profile--info {
-      visibility: visible;
-      opacity: 1;
-      grid-template-rows: 1fr;
-    }
+      &:hover > .user__profile--info {
+        visibility: visible;
+        opacity: 1;
+        grid-template-rows: 1fr;
+      }
 
-    &--info {
-      font-size: 0.9rem;
-      position: absolute;
-      display: grid;
-      grid-template-rows: 0fr;
+      &--info {
+        font-size: 0.9rem;
+        position: absolute;
+        z-index: 10;
+        display: grid;
+        grid-template-rows: 0fr;
 
-      cursor: auto;
+        cursor: auto;
 
-      background-color: white;
-      padding: 1em;
-      width: rem(150);
-      top: rem(30);
-      right: rem(10);
+        background-color: white;
+        padding: 1em;
+        width: rem(150);
+        top: rem(30);
+        right: rem(10);
 
-      visibility: hidden;
-      opacity: 0;
+        visibility: hidden;
+        opacity: 0;
 
-      transition: 0.1s ease-in-out;
+        transition: 0.1s ease-in-out;
 
-      > div {
-        overflow: hidden;
+        > div {
+          overflow: hidden;
+        }
       }
     }
   }

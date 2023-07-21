@@ -1,12 +1,13 @@
 @use "../../FunctionSASS/FunctionSASS.scss" as *;
 
 .detailedProduct {
-  outline: 1px solid red;
+  // outline: 1px solid red;
 
   @include breakpoint("medium") {
     display: grid;
     grid-template-columns: 1.5fr 2fr;
     grid-template-columns: 1fr 1fr;
+    gap: 4rem;
   }
 
   &__img--container {
@@ -34,34 +35,66 @@
     > div {
       padding-block: 1em;
       display: grid;
-      outline: 1px solid red;
+      // outline: 1px solid red;
       gap: 1rem;
     }
+
+    &--category {
+      // font-size: 1.6rem;
+      // font-size: 1rem;
+      font-size: clamp(1rem, 0.79rem + 1.1vw, 1.6rem);
+      text-transform: uppercase;
+      color: hsl(var(--txt-clr) / 0.6);
+    }
     &--title {
-      font-size: 1.3rem;
+      // font-size: 2.5rem;
+      // font-size: 1.8rem;
+
+      font-size: clamp(1.8rem, 1.54rem + 1.28vw, 2.5rem);
+      font-weight: lighter;
+      color: hsl(var(--txt-clr) / 0.9);
+    }
+
+    &--description {
+      // font-size: 1.3rem;
+      // font-size: 1rem;
+      font-size: clamp(1rem, 0.9rem + 0.54vw, 1.3rem);
+      color: hsl(var(--txt-clr) / 0.8);
     }
 
     &--price {
-      font-size: 1.3rem;
+      // font-size: 1.6rem;
+
+      // font-size: 2.2rem;
+
+      font-size: clamp(1.6rem, 1.39rem + 1.1vw, 2.2rem);
+      color: hsl(var(--txt-clr));
+      font-weight: 501;
     }
 
     form {
-      outline: 2px solid red;
-    //   height: 100%;
+      // outline: 2px solid red;
+      //   height: 100%;
       align-self: end;
       .form__buttons {
-        outline: 1px solid red;
-        background-color: white;
+        // outline: 2px solid red;
+        border: 1px solid hsl(var(--accent-clr) / 0.8);
         border-radius: 0.3rem;
-        //   padding-inline: .5rem;
+
+        font-size: 1.1rem;
 
         > input {
+          color: hsl(var(--accent-clr));
+
+          font-weight: 600;
           text-align: center;
           width: 100%;
           border-color: transparent;
+          background-color: transparent;
         }
 
         display: flex;
+
         > button {
           background-color: transparent;
           border-color: transparent;
@@ -82,11 +115,39 @@
         gap: 1rem;
 
         > button {
-          padding-block: 0.3em;
+          padding-block: 1em;
           display: flex;
           align-items: center;
           gap: 0.5em;
           justify-content: center;
+          border-radius: 0.3rem;
+          font-weight: 501;
+
+          transition: 0.1s ease-in-out;
+        }
+
+        .addToCart_btn {
+          background-color: hsl(var(--txt-clr));
+          color: white;
+          border-color: hsl(var(--txt-clr));
+
+          &:hover {
+            // background-color: white;
+            // color: hsl(var(--txt-clr));
+            transform: scale(1.1);
+          }
+        }
+
+        .buyNow_btn {
+          background-color: transparent;
+          color: hsl(var(--txt-clr));
+          border-color: hsl(var(--txt-clr));
+
+          &:hover {
+            // background-color: hsl(var(--txt-clr));
+            // color: white;
+            transform: scale(1.1);
+          }
         }
       }
     }

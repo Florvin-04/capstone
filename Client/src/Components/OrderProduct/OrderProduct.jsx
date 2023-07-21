@@ -11,8 +11,11 @@ function OrderProduct(order) {
         className="orderProduct"
       >
         <header className="orderProduct__header">
-          <p>Order ID: {order.order_id}</p>
-          <p>{order.status}</p>
+          <p className="order__id">
+            <span>Order ID: </span>
+            <span>{order.order_id}</span>
+          </p>
+          <p className="order__status">{order.status}</p>
         </header>
         <div className="orderProduct__container">
           <div className="image--container">
@@ -29,26 +32,26 @@ function OrderProduct(order) {
               <p className="orderProduct__title">{order.title}</p>
             </div>
             <div>
-              <p>{toPHCurrency(order.price)}</p>
-              <p>x{order.quantity}</p>
-              <p>{toPHCurrency(order.quantity * order.price)}</p>
+              <p className="orderProduct__price">{toPHCurrency(order.price)}</p>
+              <p className="orderProduct__quantity">x{order.quantity}</p>
+              <p className="orderProduct__subtotal">{toPHCurrency(order.quantity * order.price)}</p>
             </div>
           </div>
         </div>
         <div className="orderProduct__footer">
           <div>
             <p className="contact__person">
-              Contact Person:{" "}
+              <span>Contact Person:</span>
               <span>
                 {order.contact_person} | {order.phone_number}
               </span>
             </p>
             <p>
-              Adddress: <span>{order.delivery_address}</span>
+              <span>Adddress:</span> <span>{order.delivery_address}</span>
             </p>
           </div>
           <div>
-            <p>{order.payment_method}</p>
+            <p className="orderPaymentMethod">{order.payment_method}</p>
           </div>
         </div>
       </div>

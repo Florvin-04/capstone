@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import "./CartProduct.scss";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
+import { FaTrashAlt } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 
 export const CartProduct = ({ product, setLoadingCart }) => {
@@ -113,7 +114,7 @@ export const CartProduct = ({ product, setLoadingCart }) => {
             if (response.data.cart.action == "subtract") {
               setInputValue((prevData) => Number(prevData) - 1);
             }
-
+            fetchCartData();
             setInputPreviousValue(response.data.cart.quantity);
           }, 1000);
         } else {
@@ -239,7 +240,6 @@ export const CartProduct = ({ product, setLoadingCart }) => {
             <div className="cartProduct__name--container">
               <div>
                 <p className="cartProduct__name">{product.title}</p>
-                {/* <p className="cartProduct__price">{toPHCurrency(product.price)}</p> */}
               </div>
               <div className="cartProduct__updating--container">
                 <div>
@@ -324,6 +324,16 @@ export const CartProduct = ({ product, setLoadingCart }) => {
             </div>
           </div>
         </div>
+
+        <button
+          className="cart__delete--btn"
+          onClick={() => {
+            document.body.classList.add("modal-open");
+            modalRef.current.showModal();
+          }}
+        >
+          <FaTrashAlt />
+        </button>
         {/* <p className="cartSubtotal">{toPHCurrency(subtotal)}</p> */}
       </label>
     </>

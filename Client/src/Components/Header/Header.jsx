@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Header.scss";
-import { useNavigate, Link, NavLink } from "react-router-dom";
+import { useNavigate, Link, NavLink, useLocation } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
@@ -8,6 +8,8 @@ import { FaShoppingCart, FaUser } from "react-icons/fa";
 const Header = () => {
   const { loggedInName, loggedInID, isAutorize, showCart, route } = useGlobalContext();
   const navigate = useNavigate();
+  // const location = useLocation()
+  // console.log(location);
   // const [isAutorize, setIsAuthorize] = useState(false);
 
   // axios.defaults.withCredentials = true;
@@ -38,62 +40,58 @@ const Header = () => {
   return (
     <>
       <header className="header">
-        <Link to="/">
-          <img
-            src="./logo.png"
-            alt="Logo"
-          />
-        </Link>
-        <nav className="navigation">
-          <ul className="navigation__list">
-            <li className="navigation__list--item">
-              <NavLink
-                to="/products"
-                className="navigation__list--link"
-              >
-                products
-              </NavLink>
-            </li>
-            <li className="navigation__list--item">
-              {/* <NavLink
-                to="/cart"
-                className="navigation__list--item"
-              >
-                <FaShoppingCart />
-              </NavLink> */}
-              <button
-                className="navigation__list--link cart-btn"
-                onClick={showCart}
-              >
-                <FaShoppingCart />
-              </button>
-            </li>
-          </ul>
+        <div className="container">
+          <Link to="/">
+            <img
+              src="./logo.png"
+              alt="Logo"
+            />
+          </Link>
+          <nav className="navigation">
+            <ul className="navigation__list">
+              <li className="navigation__list--item">
+                <NavLink
+                  to="/products"
+                  className="navigation__list--link"
+                >
+                  Products
+                </NavLink>
+              </li>
+              <li className="navigation__list--item">
+                <button
+                  className="navigation__list--link cart-btn"
+                  onClick={showCart}
+                >
+                  <FaShoppingCart />
+                </button>
+              </li>
+            </ul>
 
-          {isAutorize ? (
-            <>
-              <div className="user__profile">
-                <FaUser />
-                {/* {loggedInName.first_name} {loggedInName.last_name} {loggedInID} */}
-                <span>{loggedInName.first_name}</span>
-                <div className="user__profile--info">
-                  <div>
-                    <NavLink to="/orders">My purchase</NavLink>
-                    <button onClick={handleLogout}>Logout</button>
+            {isAutorize ? (
+              <>
+                <div className="user__profile">
+                  <FaUser />
+                  {/* {loggedInName.first_name} {loggedInName.last_name} {loggedInID} */}
+                  <span>{loggedInName.first_name}</span>
+                  <div className="user__profile--info">
+                    <div>
+                      <NavLink to="/orders">My purchase</NavLink>
+                      <button onClick={handleLogout}>Logout</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Login
-            </button>
-          )}
-        </nav>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Login
+              </button>
+            )}
+          </nav>
+        </div>
       </header>
     </>
   );

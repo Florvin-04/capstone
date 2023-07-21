@@ -1,114 +1,29 @@
 @use "../../FunctionSASS/FunctionSASS.scss" as *;
-// .cartProduct__container {
-//   outline: 1px solid red;
-//   // display: flex;
-//   // padding: 1em;
-//   position: relative;
-
-//   .cartProduct__container--description {
-//     display: flex;
-//     // align-items: center;
-//     gap: 1em;
-
-//     .cartProduct__img--container{
-
-//       img {
-//         width: 100px;
-//       }
-//     }
-
-//     // > div {
-//     //   height: 100%;
-//     //   display: grid;
-//     //   gap: 1em;
-//     //   outline: 2px solid red;
-//     //   width: 100%;
-//     //   // background-color: red;
-//     // }
-
-//     .cartProduct__name--container {
-//       width: 100%;
-//       outline: 5px solid red;
-//       display: flex;
-//       justify-content: space-between;
-//       align-items: center;
-//       flex-wrap: wrap;
-
-//       > div:nth-child(2) {
-//         outline: 1px solid red;
-//         // width: min(250px, 100%);
-//         width: 100%;
-//         display: grid;
-
-//         gap: 1rem;
-//       }
-
-//       .cartProduct__name {
-//         font-size: 1.2rem;
-//         width: min(200px, 100%);
-//         width: 100%;
-//         overflow: hidden;
-
-//         max-height: 3.5rem;
-//         display: block;
-
-//         text-overflow: ellipsis;
-//         word-break: word;
-//         display: -webkit-box;
-//         -webkit-box-orient: vertical;
-//         -webkit-line-clamp: 2;
-//       }
-
-//       .cartProduct__price {
-//         display: flex;
-//         justify-content: space-between;
-//         font-size: 1.1rem;
-//       }
-
-//       .cartPrice-form {
-//         display: flex;
-//         align-items: center;
-//         justify-content: space-between;
-//       }
-
-//       .cart__updating--container {
-//         display: flex;
-//         align-items: center;
-//         gap: 1rem;
-//         flex-wrap: wrap;
-
-//         > div {
-//           // margin-right: 5rem;
-//           .cart__delete--btn {
-//             // background-color: red;
-//             // position: absolute;
-//             // top: 50%;
-//             // left: 50%;
-//             // transform: translate(-50%, -50%);
-//           }
-//         }
-//       }
-//     }
-//   }
-
-//   .cartSubtotal {
-//     text-align: right;
-//   }
-// }
 
 .checkout_cart:checked + .cartProduct__container {
-  background-color: red;
+  background-color: hsl(var(--accent-clr) / 0.2);
+  // outline: 1px solid red
+  // border-bottom: 1px solid transparent;
 }
 
-
-
-
 .cartProduct__container {
+  cursor: pointer;
+  padding: 0.1em;
   margin-top: 1rem;
-  outline: 1px solid red;
+  // outline: 1px solid red;
+  border-bottom: 1px solid hsl(var(--accent-clr));
+
+  padding-top: 0.2em;
+  padding-bottom: 1em;
 
   display: grid;
   gap: 1rem;
+
+  position: relative;
+
+  &:hover > .cart__delete--btn {
+    display: block;
+  }
 
   &--description {
     // display: grid;
@@ -120,7 +35,7 @@
     gap: 1rem;
 
     .cartProduct__img--container {
-      outline: 1px solid red;
+      // outline: 1px solid red;
       display: flex;
 
       img {
@@ -133,22 +48,25 @@
     }
 
     .cartProduct__info {
-      outline: 1px solid red;
+      // outline: 1px solid red;
 
       width: 100%;
 
       .cartProduct__category {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+        color: hsl(var(--txt-clr));
+        text-transform: uppercase;
+        // font-weight: 600;
       }
 
       .cartProduct__name--container {
         //
 
         .cartProduct__name {
-          outline: 1px solid red;
+          // outline: 1px solid red;
           height: 3.125rem;
           width: 85%;
-          color: black;
+          color: hsl(var(--txt-clr));
           font-size: 1rem;
           word-wrap: break-word;
           white-space: normal;
@@ -160,12 +78,16 @@
         }
 
         .cartProduct__price {
-          opacity: 0.8;
+          // opacity: 0.8;
+          color: hsl(var(--txt-clr) / 0.7);
+          font-weight: 600;
           font-size: rem(15);
         }
 
         .cartSubtotal {
           margin-left: auto;
+          color: hsl(var(--txt-clr));
+          font-weight: 600;
         }
 
         .cartProduct__updating--container {
@@ -177,15 +99,25 @@
             gap: 1rem;
             // width: 100%;
             // justify-content: space-around;
-            outline: 2px solid red;
+            // outline: 2px solid red;
             text-align: center;
             // flex-wrap: wrap;
           }
 
           form {
             display: flex;
-            background-color: white;
-            outline: 1px solid red;
+            background-color: transparent;
+            // outline: 1px solid red;
+            // border: 1px solid hsl(var(--accent-clr));
+            // border-radius: .3rem;
+
+            > input {
+              background-color: transparent;
+
+              border-color: transparent;
+              width: 100%;
+              text-align: center;
+            }
 
             > button {
               background-color: transparent;
@@ -200,14 +132,27 @@
                 cursor: wait;
               }
             }
-            > input {
-              border-color: transparent;
-              width: 100%;
-              text-align: center;
-            }
           }
         }
       }
+    }
+  }
+
+  .cart__delete--btn {
+    padding: 0.5em;
+    position: absolute;
+    top: rem(10);
+    right: rem(10);
+
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.3rem;
+
+    display: none;
+
+    > svg {
+      fill: red;
+      font-size: 1.1rem;
     }
   }
 }

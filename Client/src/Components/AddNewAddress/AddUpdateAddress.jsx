@@ -135,12 +135,13 @@ function AddUpdateAddress({ setForms, forms, editAddress }) {
         </div>
         <div className="add-edit__btn">
           <button
+          className="addUpdate__btn--cancel"
             type="button"
             onClick={() => setForms("chooseAddress")}
           >
             Cancel
           </button>
-          <button type="subtmit">Submit</button>
+          <button className="addUpdate__btn--submit" type="subtmit">Submit</button>
         </div>
       </form>
     </>

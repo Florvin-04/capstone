@@ -18,6 +18,7 @@ const Cart = () => {
     hideCart,
     showCart,
     checkoutItems,
+    fetchCartData,
   } = useGlobalContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,17 +58,16 @@ const Cart = () => {
 
   return (
     <section className={`cart__page ${isCartShown && "show"}`}>
+      <header className="cart__page--header">
+        <p>My Cart</p>
+        <button
+          className="hide_cart"
+          onClick={hideCart}
+        >
+          X
+        </button>
+      </header>
       <div className="cart__parent">
-        <header className="cart__parent--header">
-          cart
-          <button
-            className="hide_cart"
-            onClick={hideCart}
-          >
-            X
-          </button>
-        </header>
-
         {cartData.map((product) => {
           return (
             <CartProduct
@@ -93,11 +93,14 @@ const Cart = () => {
       <footer className="cart__page--footer">
         {checkoutItems.checkout_cart.length !== 0 ? (
           <>
-            <p>Total: {getTotal()}</p>
+            <p className="cart_total">Total: {getTotal()}</p>
             <button
               // disabled
               onClick={() => {
                 hideCart();
+                if (location.pathname === "/checkout") {
+                  window.location.reload();
+                }
                 navigate("/checkout");
               }}
             >

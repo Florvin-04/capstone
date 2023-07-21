@@ -3,6 +3,7 @@ import "./Orders.scss";
 import axios from "axios";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import OrderProduct from "../../Components/OrderProduct/OrderProduct";
+import PageLoading from "../../Components/Loaders/PageLoading";
 function Orders() {
   const { loggedInID, route } = useGlobalContext();
 
@@ -36,17 +37,26 @@ function Orders() {
   }, [loggedInID]);
 
   if (isLoading) {
-    return <p>loading</p>;
+    return (
+      <div className="page__loading">
+        <PageLoading />;
+      </div>
+    );
   }
 
   return (
     <>
-      <div>Orders</div>
+      <div>
+        <h2 className="page__title">My Orders</h2>
+      </div>
 
       <div className="orders__item--container">
         {orders.map((order, idx) => {
           return (
-           <OrderProduct key={order.order_id} {...order}/>
+            <OrderProduct
+              key={order.order_id}
+              {...order}
+            />
           );
         })}
       </div>
