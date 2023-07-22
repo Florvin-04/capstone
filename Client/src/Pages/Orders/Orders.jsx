@@ -45,7 +45,7 @@ function Orders() {
   }
 
   return (
-    <>
+    <div className="order__page container">
       <div>
         <h2 className="page__title">My Orders</h2>
       </div>
@@ -60,7 +60,7 @@ function Orders() {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
 

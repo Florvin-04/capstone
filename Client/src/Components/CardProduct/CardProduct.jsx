@@ -8,7 +8,7 @@ const CardProduct = (product) => {
   return (
     <>
       <NavLink
-        to={`${product.id}`}
+        to={`/products/${product.id}`}
         className="cardProduct"
       >
         <div className="cardProduct__image--container">

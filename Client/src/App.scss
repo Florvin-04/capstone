@@ -13,6 +13,7 @@
 body {
   background-color: hsl(0, 0%, 96%);
   // background-color: white;
+  overflow-x: hidden;
 }
 body.modal-open {
   overflow: hidden;
@@ -23,17 +24,33 @@ body.modal-open {
   margin-inline: auto;
 }
 
-.page__loading{
+.page__loading {
   // outline: 1px solid red;
   min-height: 80vh;
   display: grid;
   place-content: center;
 }
 
-.page__title{
+.page__title {
   margin-top: 1rem;
   text-align: center;
   font-size: 2rem;
   color: hsl(var(--txt-clr));
   text-transform: capitalize;
+}
+
+// button {
+//   transition: 0.1s ease-in-out;
+
+//   &:hover {
+//     transform: scale(1.1);
+//   }
+// }
+
+.isOpenCart {
+  background-color: hsl(var(--txt-clr) / 0.8);
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  // visibility: hidden;
 }

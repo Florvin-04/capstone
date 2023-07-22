@@ -34,6 +34,7 @@ const Checkout = () => {
     getAddress,
     fetchCartData,
     cartData,
+    showCart,
   } = useGlobalContext();
 
   const [loading, setLoading] = useState(true);
@@ -44,6 +45,7 @@ const Checkout = () => {
 
   const [errorMessage, setErrorMessage] = useState({
     noAddress: "",
+    noPaymentMethod: "",
   });
 
   const [chosenAddress, setChosenAddress] = useState("");
@@ -176,6 +178,14 @@ const Checkout = () => {
       return;
     }
 
+    if (chosentPaymentMethod == "") {
+      setErrorMessage((prevData) => ({
+        ...prevData,
+        noPaymentMethod: "Add a payment method",
+      }));
+      return;
+    }
+
     try {
       const response = await axios.post(`${route}/place-order`, {
         items: [...checkoutItems.checkout_cart.map((item) => item.id)],
@@ -188,7 +198,7 @@ const Checkout = () => {
         localStorage.removeItem("reciept_items");
 
         await new Promise((resolve) => {
-          // setLoading(true);
+          setLoading(true);
           setTimeout(resolve, 2000);
         });
 
@@ -217,6 +227,8 @@ const Checkout = () => {
       </div>
     );
   }
+
+  console.log(chekedProduct.ids);
 
   return (
     <>
@@ -292,88 +304,102 @@ const Checkout = () => {
 
       <section className="checkout__section">
         <h2 className="page__title">Checkout</h2>
-        {hasCurrentAddress() === "false" ? (
-          <button
-            onClick={() => {
-              getAddress();
-              document.body.classList.add("modal-open");
-              modalRef.current.showModal();
-            }}
-          >
-            Add Delivery Adress
-          </button>
-        ) : (
-          <div className="shippingAddress">
-            <h2>Shipping Address</h2>
+        {/* <div className="no-delivery-address"></div> */}
+        {chekedProduct.ids.length > 0 ? (
+          <>
+            {hasCurrentAddress() === "false" ? (
+              <button
+                className="add__address"
+                onClick={() => {
+                  getAddress();
+                  document.body.classList.add("modal-open");
+                  modalRef.current.showModal();
+                }}
+              >
+                Add Delivery Adress
+              </button>
+            ) : (
+              <div className="shippingAddress">
+                <h2>Shipping Address</h2>
 
-            <button
-              className="changeAddress"
-              onClick={() => {
-                getAddress();
-                document.body.classList.add("modal-open");
-                modalRef.current.showModal();
-              }}
-            >
-              Change Address
-            </button>
-            <div className="shippingAddress__information">
-              <p>
-                Contact Person:{" "}
-                <span>
-                  {currentAddress.contactPerson} | {currentAddress.phoneNumber}
-                </span>
-              </p>
-              <p>
-                Delivery Address:{" "}
-                <span>
-                  {currentAddress.address} | {currentAddress.zipCode}
-                </span>
-              </p>
-              {/* {chosentPaymentMethod} */}
-              <div className="shipping__method">
-                <p>Shipping Method: </p>
-                <div className="shipping__method--options">
-                  {paymentMethod.map((payment, idx) => {
-                    return (
-                      <div key={idx}>
-                        <input
-                          hidden
-                          disabled={!payment.available}
-                          type="radio"
-                          name="shipping_method"
-                          value={payment.method}
-                          id={payment.method}
-                          checked={chosentPaymentMethod === `${payment.method}`}
-                          onChange={(e) => setChosentPaymentMethod(e.target.value)}
-                        />
+                <button
+                  className="changeAddress"
+                  onClick={() => {
+                    getAddress();
+                    document.body.classList.add("modal-open");
+                    modalRef.current.showModal();
+                  }}
+                >
+                  Change Address
+                </button>
+                <div className="shippingAddress__information">
+                  <p>
+                    Contact Person:{" "}
+                    <span>
+                      {currentAddress.contactPerson} | {currentAddress.phoneNumber}
+                    </span>
+                  </p>
+                  <p>
+                    Delivery Address:{" "}
+                    <span>
+                      {currentAddress.address} | {currentAddress.zipCode}
+                    </span>
+                  </p>
+                  {/* {chosentPaymentMethod} */}
+                  <div className="shipping__method">
+                    <p>Shipping Method: </p>
+                    <div className="shipping__method--options">
+                      {paymentMethod.map((payment, idx) => {
+                        return (
+                          <div key={idx}>
+                            <input
+                              hidden
+                              disabled={!payment.available}
+                              type="radio"
+                              name="shipping_method"
+                              value={payment.method}
+                              id={payment.method}
+                              checked={chosentPaymentMethod === `${payment.method}`}
+                              onChange={(e) => setChosentPaymentMethod(e.target.value)}
+                            />
 
-                        <label htmlFor={payment.method}>{payment.method}</label>
-                      </div>
-                    );
-                  })}
+                            <label htmlFor={payment.method}>{payment.method}</label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="checkoutProduct__wrapper">
+              {cartData.map((product) => {
+                if (chekedProduct.ids.includes(product.id)) {
+                  return (
+                    <CheckoutProduct
+                      key={product.id}
+                      product={product}
+                      chekedProduct={chekedProduct}
+                    />
+                  );
+                }
+              })}
+              <div className="place__order--wrapper">
+                <p>Total: {getTotal()}</p>
+                <button onClick={placeOrder}>Place Order</button>
+                <div className="error__message">
+                  {errorMessage.noAddress && <p>{errorMessage.noAddress}</p>}
+                  {errorMessage.noPaymentMethod && <p>{errorMessage.noPaymentMethod}</p>}
                 </div>
               </div>
             </div>
+          </>
+        ) : (
+          <div className="no-delivery-address">
+            <p>No Products Found</p>
+            <button onClick={() => showCart()}>Open Cart</button>
           </div>
         )}
-        <div className="checkoutProduct__wrapper">
-          {cartData.map((product) => {
-            if (chekedProduct.ids.includes(product.id)) {
-              return (
-                <CheckoutProduct
-                  key={product.id}
-                  product={product}
-                  chekedProduct={chekedProduct}
-                />
-              );
-            }
-          })}
-          <div className="place__order--wrapper">
-            <p>Total: {getTotal()}</p>
-            <button onClick={placeOrder}>Place Order</button>
-            {errorMessage.noAddress && <p>{errorMessage.noAddress}</p>}
-          </div>
-        </div>
       </section>
     </>
   );

@@ -79,7 +79,7 @@ const Products = () => {
   }
 
   return (
-    <section className="products__container">
+    <section className="products__container container">
       <h2 className="page__title">Products</h2>
       <div className="">
         <form

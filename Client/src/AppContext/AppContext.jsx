@@ -164,9 +164,18 @@ export const AppProvider = ({ children }) => {
     return Number(number).toLocaleString("en-PH", currencyOptions);
   }
 
+  function generateRandomProducts(category) {
+    const shuffledProducts = products
+      .filter((product) => product.category === category)
+      .sort(() => 0.5 - Math.random());
+    const selectedProducts = shuffledProducts.slice(0, 4);
+    return selectedProducts;
+  }
+
   return (
     <AppContext.Provider
       value={{
+        generateRandomProducts,
         products,
         route,
         loggedInName,

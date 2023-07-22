@@ -36,32 +36,6 @@ const DetailedProduct = () => {
     console.log("submit");
 
     axios.defaults.withCredentials = true;
-    // toast.promise(
-    //   axios
-    //     .post(`${route}/add-to-cart`, {
-    //       product_id: id,
-    //       user_id: loggedInID,
-    //       quantity: quantity,
-    //     })
-    //     .then(async (response) => {
-    //       if (response.data.Status === "success") {
-    //         console.log(response.data.Message);
-    //         console.log("cart data load");
-    //         await fetchCartData();
-    //         setQuantity(1);
-    //       } else {
-    //         console.log(response.data.Message);
-    //       }
-    //     })
-    //     .catch((err) => console.log(err)),
-    //   {
-    //     pending: "Adding To Cart",
-    //     success: "Item Added To Cart",
-    //     error: "Error",
-    //   },
-    //   { autoClose: 1500 }
-    // );
-    // setIsCartLoading(false)
 
     try {
       const response = await axios.post(`${route}/add-to-cart`, {
@@ -72,6 +46,7 @@ const DetailedProduct = () => {
 
       if (response.data.Status === "success") {
         console.log(response.data.Message);
+        notify();
         await fetchCartData();
         setQuantity(1);
       }
@@ -79,28 +54,19 @@ const DetailedProduct = () => {
       console.log(err);
     }
 
-    // axios
-    //   .post(`${route}/add-to-cart`, {
-    //     product_id: id,
-    //     user_id: loggedInID,
-    //     quantity: quantity,
-    //   })
-    //   .then((response) => {
-    //     if (response.data.Status === "success") {
-    //       console.log(response.data.Message);
-    //       setQuantity(1);
-    //     } else {
-    //       console.log(response.data.Message);
-    //     }
-    //   })
-    //   .catch((err) => console.log(err));
     setIsLoading(false);
   }
+
+  const notify = () => {
+    toast.success("Item Added To Cart", {
+      autoClose: 1500,
+    });
+  };
 
   return (
     <>
       <ToastContainer />
-      <div>
+      <div className="container detailedProduct__container">
         {products
           .filter((productId) => productId.id == id)
           .map((product) => {
@@ -204,7 +170,12 @@ const DetailedProduct = () => {
                           </>
                         )}
                       </button>
-                      <button className="buyNow_btn" disabled={isLoading}>Buy Now</button>
+                      <button
+                        className="buyNow_btn"
+                        disabled={isLoading}
+                      >
+                        Buy Now
+                      </button>
                     </div>
                   </form>
                 </div>

@@ -132,14 +132,8 @@ export const CartProduct = ({ product, setLoadingCart }) => {
     checkoutItems.checkout_cart.filter((item) => item.id != id);
     await new Promise((resolve) => {
       setTimeout(resolve, 1500);
-      toast.success(
-        "Deleting Item",
-        {
-          position: toast.POSITION.TOP_CENTER,
-        },
-        { autoClose: 1000 }
-      );
     });
+    toast.success("Product Deleted", { autoClose: 1000 });
     modalRef.current.close();
 
     // setLoadingCart(true);
@@ -184,30 +178,41 @@ export const CartProduct = ({ product, setLoadingCart }) => {
   return (
     <>
       <ToastContainer autoClose={1000} />
+
       <dialog
         ref={modalRef}
         className="cart_modal"
       >
-        My modal
-        <button
-          disabled={loading}
-          onClick={() => {
-            document.body.classList.remove("modal-open");
-            handleDelete(product.id);
-          }}
-        >
-          Delete Item
-        </button>
-        <button
-          disabled={loading}
-          onClick={() => {
-            document.body.classList.remove("modal-open");
+        <div>
+          <p>You are about to remove this product from your cart</p>
+          <img
+            src={`${route}/uploads/${product.image}`}
+            alt=""
+          />
+          <div className="modal__buttons">
+            <button
+              className="cancel--btn"
+              disabled={loading}
+              onClick={() => {
+                document.body.classList.remove("modal-open");
 
-            modalRef.current.close();
-          }}
-        >
-          Cancel
-        </button>
+                modalRef.current.close();
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className="delete--btn"
+              disabled={loading}
+              onClick={() => {
+                document.body.classList.remove("modal-open");
+                handleDelete(product.id);
+              }}
+            >
+              Remove Product
+            </button>
+          </div>
+        </div>
       </dialog>
 
       <input

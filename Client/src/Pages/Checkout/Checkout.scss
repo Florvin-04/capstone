@@ -3,6 +3,56 @@
 .checkout__section {
   display: grid;
   gap: 1em;
+  // min-height: 100vh;
+
+  // background-color: red;
+  position: relative;
+
+  .no-delivery-address {
+    // background-color: red;
+    min-height: 90vh;
+    display: grid;
+    gap: 1rem;
+    place-content: center;
+
+    > p {
+      font-size: 1.5rem;
+      color: hsl(var(--txt-clr));
+      font-weight: 600;
+    }
+
+    > button {
+      padding: 0.3em 0.5em;
+      background-color: transparent;
+      border-radius: 0.3rem;
+      border: 2px solid hsl(var(--txt-clr));
+      color: hsl(var(--txt-clr));
+      font-weight: 600;
+
+      transition: 0.1s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .add__address {
+    justify-self: flex-start;
+    align-self: flex-start;
+
+    padding: 0.3em 0.5em;
+    background-color: transparent;
+    border: 2px solid hsl(var(--txt-clr));
+    border-radius: 0.3rem;
+    font-weight: 600;
+
+    transition: 0.1s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 
   .shippingAddress {
     // outline: 1px solid red;
@@ -89,6 +139,8 @@
   }
 
   .place__order--wrapper {
+    padding-bottom: 2em;
+
     margin-top: 2rem;
     // background-color: red;
 
@@ -111,6 +163,18 @@
       border-radius: 0.3rem;
       font-weight: 600;
       letter-spacing: rem(0.5);
+
+      transition: 0.1s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .error__message {
+      font-size: 1.2rem;
+      color: red;
+      font-weight: 600;
     }
   }
 }
@@ -160,5 +224,3 @@
     }
   }
 }
-
-

@@ -84,7 +84,11 @@ const Cart = () => {
           <p>Your Cart is Empty</p>
           <button
             className="hide_cart"
-            onClick={hideCart}
+            onClick={() => {
+              hideCart();
+
+              navigate("/products");
+            }}
           >
             Shop Now!
           </button>

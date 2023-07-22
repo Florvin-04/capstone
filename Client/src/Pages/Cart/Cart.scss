@@ -7,8 +7,9 @@
 
   //   display: grid;
   //   outline: 5px solid red;
-  position: fixed;
+  position: absolute;
   inset: 0 0 0 0;
+  z-index: 101;
   //   overflow: scroll;
   transform: translateX(100%);
   transition: transform ease-in-out 0.1s;
@@ -41,8 +42,16 @@
     }
 
     > button {
+      padding: 0.1em 0.5em 0.01em 0.5em;
       background-color: transparent;
-      border-color: transparent;
+      border: 2px solid hsl(var(--txt-clr));
+      font-weight: 600;
+
+      transition: 0.1s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
 
@@ -92,6 +101,12 @@
       color: white;
       font-weight: 600;
       letter-spacing: rem(0.5);
+
+      transition: 0.1s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
 
@@ -103,5 +118,26 @@
 
     display: grid;
     place-content: center;
+    gap: 1rem;
+    
+    >p{
+     color: hsl(var(--txt-clr));
+     font-weight: 600;
+     font-size: 1.5rem;
+    }
+
+    > button {
+      padding: 0.3em 0.5em;
+      background-color: transparent;
+      border: 2px solid hsl(var(--txt-clr));
+      color: hsl(var(--txt-clr));
+      font-weight: 600;
+      border-radius: .3rem;
+      transition: 0.1s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
   }
 }

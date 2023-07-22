@@ -166,6 +166,50 @@
 
   opacity: 0;
   pointer-events: none;
+
+  // display: grid;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    img {
+      width: 100px;
+    }
+
+    p{
+      color: hsl(var(--txt-clr));
+      font-weight: 600;
+      font-size: 1.1rem;
+      width: 25ch;
+      text-align: center;
+    }
+  }
+
+  .modal__buttons {
+    display: flex;
+    gap: 1rem;
+
+    > button {
+      border-radius: 0.3rem;
+      font-weight: 600;
+      padding: 0.3em 0.5em;
+    }
+
+    .cancel--btn {
+      background-color: transparent;
+      border: 2px solid hsl(var(--txt-clr));
+      color: hsl(var(--txt-clr));
+    }
+
+    .delete--btn {
+      background-color: red;
+      border: 2px solid red;
+      color: white;
+    }
+  }
 }
 
 .cart_modal[open] {

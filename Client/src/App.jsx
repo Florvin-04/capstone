@@ -14,8 +14,10 @@ import Checkout from "./Pages/Checkout/Checkout";
 import Orders from "./Pages/Orders/Orders";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./Pages/NotFound/NotFound";
+import { useGlobalContext } from "./AppContext/AppContext";
 
 function App() {
+  const { isCartShown } = useGlobalContext();
   return (
     <>
       <div className="">
@@ -74,7 +76,9 @@ function App() {
             element={<NotFound />}
           />
         </Routes>
-        <Cart />
+        <div className={`${isCartShown && "isOpenCart"} `}>
+          <Cart />
+        </div>
       </div>
     </>
   );
