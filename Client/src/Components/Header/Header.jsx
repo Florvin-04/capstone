@@ -27,10 +27,8 @@ const Header = () => {
   //   });
   // }, []);
 
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      window.scrollY > 60 ? setIsActive(true) : setIsActive(false);
-    });
+  window.addEventListener("scroll", () => {
+    window.scrollY > 60 ? setIsActive(true) : setIsActive(false);
   });
 
   useEffect(() => {

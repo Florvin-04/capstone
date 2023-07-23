@@ -54,3 +54,32 @@ body.modal-open {
   z-index: 999;
   // visibility: hidden;
 }
+
+.scroll-up {
+  position: fixed;
+  bottom: 3rem;
+  right: 3rem;
+  background-color: hsl(var(--txt-clr));
+  border-color: hsl(var(--txt-clr));
+  border-radius: 0.3rem;
+  // opacity: .8;
+  visibility: hidden;
+
+  &.active {
+    visibility: visible;
+  }
+
+  transition: 0.1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  svg {
+    // fill: white;
+
+    path {
+      stroke: white;
+    }
+  }
+}

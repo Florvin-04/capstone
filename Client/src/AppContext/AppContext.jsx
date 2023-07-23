@@ -19,6 +19,7 @@ export const AppProvider = ({ children }) => {
 
   const [cartData, setCartData] = useState([]);
   const [addresses, setAddresses] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   const [loggedInName, setLoggedInName] = useState({
     first_name: "",
@@ -123,6 +124,25 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  async function getOrders() {
+    try {
+      const response = await axios.get(`${route}/orders`, {
+        params: {
+          user_id: loggedInID,
+        },
+      });
+
+      if (response.data.Status == "success") {
+        setOrders(response.data.Result);
+        return;
+      }
+      console.log(response.data.Message);
+      return;
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
+
   useEffect(() => {
     fetchCartData();
   }, [loggedInID]);
@@ -197,6 +217,9 @@ export const AppProvider = ({ children }) => {
         hideCart,
         showCart,
         setProductFilter,
+        orders,
+        setOrders,
+        getOrders,
       }}
     >
       {children}

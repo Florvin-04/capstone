@@ -1,0 +1,42 @@
+.orders__wrapper {
+  background-color: white;
+  overflow-x: scroll;
+  scroll-snap-type: proximity;
+  scrollbar-width: none;
+
+  white-space: nowrap;
+}
+
+.orders__navigation {
+  //   background-color: white;
+  width: 100%;
+  padding-block: 1em;
+  font-size: 1.1rem;
+  position: sticky;
+  min-width: 650px;
+  overflow: hidden;
+
+  > ul {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .orders__navigations--list {
+    //
+    > a {
+      color: hsl(var(--accent-clr) / 0.8);
+
+      font-weight: 600;
+
+      &:hover {
+        color: hsl(var(--txt-clr));
+      }
+
+      &.active {
+        color: hsl(var(--txt-clr));
+
+        text-decoration: underline;
+      }
+    }
+  }
+}

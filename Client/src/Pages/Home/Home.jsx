@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Home.scss";
-import banner from "../../../public/images/bg_hero.svg";
-import hero_photo from "../../../public/images/woman_hero.png";
+// import banner from "../../../public/images/bg_hero.svg";
+import hero_photo from "/images/woman_hero.png";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import CardProduct from "../../Components/CardProduct/CardProduct";
 import PageLoading from "../../Components/Loaders/PageLoading";
