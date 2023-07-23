@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import "./DetailedProduct.scss";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import axios from "axios";
 import Loaders from "../../Components/Loaders/Loaders";
@@ -8,7 +8,11 @@ import { BsCartPlus } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 
 const DetailedProduct = () => {
-  const { products, route, loggedInID, fetchCartData, toPHCurrency } = useGlobalContext();
+  const { products, route, loggedInID, fetchCartData, toPHCurrency, isAutorize } =
+    useGlobalContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const modalRef = useRef();
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +30,16 @@ const DetailedProduct = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!isAutorize) {
+      console.log("login first");
+
+      document.body.classList.add("modal-open");
+
+      modalRef.current.showModal();
+      return;
+    }
+
     setIsLoading(true);
     // setIsCartLoading(true)
 
@@ -66,6 +80,41 @@ const DetailedProduct = () => {
   return (
     <>
       <ToastContainer />
+      <dialog
+        className="loginFirstModal"
+        ref={modalRef}
+      >
+        <div>
+          <p>You Need To Login First</p>
+
+          <div className="modal--buttons">
+            <button
+              className="cancel--btn"
+              // disabled={loading}
+              onClick={() => {
+                document.body.classList.remove("modal-open");
+                modalRef.current.close();
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className="login--btn"
+              // disabled={loading}
+              onClick={() => {
+                document.body.classList.remove("modal-open");
+                navigate("/login", {
+                  state: {
+                    prevURL: location.pathname,
+                  },
+                });
+              }}
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </dialog>
       <div className="container detailedProduct__container">
         {products
           .filter((productId) => productId.id == id)

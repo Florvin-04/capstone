@@ -23,6 +23,8 @@
 
     @include breakpoint(medium) {
       grid-template-rows: 1fr;
+      background-color: transparent;
+
     }
 
     &.show {
@@ -162,12 +164,31 @@
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(auto-fit, 225px);
+    // place-content: center;
     place-content: center;
     text-align: center;
-    min-height: 100vh;
+    // min-height: 100vh;
 
     @include breakpoint("large") {
       // place-content: unset;
+    }
+
+    .no-item-found {
+      // outline: 1px solid red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // background-color: red;
+      // width: 70%;
+      // height: 80%;
+      min-height: 50vh;
+      // position: absolute;
+
+      >p{
+        font-size: 1.5rem;
+        color: hsl(var(--txt-clr));
+        font-weight: 700;
+      }
     }
   }
 }

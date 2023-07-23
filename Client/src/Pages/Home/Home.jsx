@@ -5,9 +5,11 @@ import hero_photo from "/images/woman_hero.png";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import CardProduct from "../../Components/CardProduct/CardProduct";
 import PageLoading from "../../Components/Loaders/PageLoading";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const { products, generateRandomProducts } = useGlobalContext();
   // console.log(products);
+  const navigate = useNavigate();
 
   const [randomProducts, setRandomProducts] = useState({
     men: [],
@@ -58,14 +60,19 @@ const Home = () => {
                 Find the perfect outfit that speaks to your individuality. Explore [Clothing Store
                 Name]'s diverse range of styles to create your one-of-a-kind fashion statement.
               </p>
-              <button className="hero__button">Shop Now</button>
+              <button
+                className="hero__button"
+                onClick={() => navigate("/products")}
+              >
+                Shop Now
+              </button>
             </div>
           </div>
         </section>
 
         <section className="featured_products mens container">
           <h2>Women's newly arrived product</h2>
-          <div className="">
+          <div className="featured_product">
             {randomProducts.women.map((product) => {
               return (
                 <CardProduct
@@ -79,11 +86,19 @@ const Home = () => {
               );
             })}
           </div>
+          <div className="featured_button">
+            <button
+              className=""
+              onClick={() => navigate("/products")}
+            >
+              Shop Now
+            </button>
+          </div>
         </section>
 
         <section className="featured_products mens container">
           <h2>Men's newly arrived product</h2>
-          <div className="">
+          <div className="featured_product">
             {randomProducts.men.map((product) => {
               return (
                 <CardProduct
@@ -96,6 +111,73 @@ const Home = () => {
                 // </>
               );
             })}
+          </div>
+          <div className="featured_button">
+            <button
+              className=""
+              onClick={() => navigate("/products")}
+            >
+              Shop Now
+            </button>
+          </div>
+        </section>
+
+        <section className="discount container">
+          <div className="discount__header">
+            <p>Be part of our family</p>
+            <p>Get this exclusive deals</p>
+          </div>
+          <div className="company__traits">
+            <div>
+              <img
+                src="/images/settings.png"
+                alt=""
+              />
+              <p>PEEK ON OUR NEWEST COLLECTIONS</p>
+            </div>
+
+            <div>
+              <img
+                src="/images/cart.png"
+                alt=""
+              />
+              <p>QUICK & CHECKOUT</p>
+            </div>
+
+            <div>
+              <img
+                src="/images/bag.png"
+                alt=""
+              />
+              <p>DEALS EXCLUSIVELY FOR YOU</p>
+            </div>
+
+            <div>
+              <img
+                src="/images/return.png"
+                alt=""
+              />
+              <p>HASSLE-FREE EXCHANGES IN STORE</p>
+            </div>
+
+            <div>
+              <img
+                src="/images/shipping.png"
+                alt=""
+              />
+              <p>FREE SHIPPING</p>
+            </div>
+
+            <div>
+              <img
+                src="/images/Gift.png"
+                alt=""
+              />
+              <p>FIRST DIBS ON WELCOME GIFT</p>
+            </div>
+          </div>
+          <div className="discount__price">
+            <button onClick={() => navigate("/login")}>Get Your 15% Off</button>
           </div>
         </section>
       </div>

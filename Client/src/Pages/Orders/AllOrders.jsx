@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Orders.scss";
 import axios from "axios";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import OrderProduct from "../../Components/OrderProduct/OrderProduct";
 import PageLoading from "../../Components/Loaders/PageLoading";
@@ -10,6 +10,7 @@ function AllOrders() {
   const { loggedInID, route, orders, setOrders, getOrders } = useGlobalContext();
   //   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   //   async function getOrders() {
   //     try {
@@ -41,6 +42,15 @@ function AllOrders() {
     return (
       <div className="page__loading">
         <PageLoading />
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="no-orders">
+        <p>No Orders Yet</p>
+        <button onClick={() => navigate("/products")}>Shop Now</button>
       </div>
     );
   }

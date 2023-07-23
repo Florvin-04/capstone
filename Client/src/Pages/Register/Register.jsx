@@ -109,7 +109,11 @@ const Register = () => {
   return (
     <section className="register">
       <div>
+        <header className="register__header">
+
         <h2>Register</h2>
+        <img src="/logo.svg" alt="" />
+        </header>
         <form
           className="rergister--form"
           onSubmit={handleSubmit}

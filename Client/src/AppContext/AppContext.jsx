@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { json, useLocation } from "react-router-dom";
 import axios from "axios";
 export const AppContext = createContext(null);
 
@@ -59,6 +59,7 @@ export const AppProvider = ({ children }) => {
       });
 
       if (response.data.Status === "Success") {
+        // console.log(JSON.stringify(response.data.Result));
         setProducts(response.data.Result);
       } else {
         console.log(response.data.Message);

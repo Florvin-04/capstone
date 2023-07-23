@@ -201,7 +201,11 @@ const Products = () => {
         </form>
 
         <div className="products">
-          {products.length === 0 && <p>No Item Found</p>}
+          {products.length === 0 && (
+            <div className="no-item-found">
+              <p>No Item Found</p>
+            </div>
+          )}
           {products.map((product) => {
             return (
               <CardProduct

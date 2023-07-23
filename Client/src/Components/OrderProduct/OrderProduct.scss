@@ -87,8 +87,8 @@
           font-size: 1.1rem;
 
           @include breakpoint("large") {
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
           }
         }
 

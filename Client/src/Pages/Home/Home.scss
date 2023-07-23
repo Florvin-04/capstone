@@ -98,11 +98,124 @@
       font-size: 1.5rem;
       color: hsl(var(--txt-clr) / 0.9);
     }
-    > div {
+    .featured_product {
       // background-color: red;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
+    }
+
+    .featured_button {
+      // outline: 1px solid red;
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+
+      > button {
+        font-size: 1.1rem;
+        padding: 0.3em 0.5em;
+        background-color: transparent;
+        border: 2px solid hsl(var(--txt-clr));
+        color: hsl(var(--txt-clr));
+        font-weight: 600;
+
+        border-radius: 0.3rem;
+
+        transition: 0.1s ease-in-out;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+
+  .discount {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    // outline: 1px solid red;
+
+    .discount__header {
+      text-align: center;
+      text-transform: uppercase;
+
+      > p:first-child {
+        color: hsl(var(--txt-clr));
+        font-weight: 800;
+        // font-size: 1.1rem;
+        font-size: clamp(1.1rem, 0.88rem + 0.967vw, 1.6rem);
+      }
+
+      > p:last-child {
+        color: hsl(var(--accent-clr));
+        font-weight: 700;
+        font-size: 0.9rem;
+        font-size: clamp(0.9rem, 0.68rem + 0.97vw, 1.4rem);
+      }
+    }
+
+    .company__traits {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+
+      @include breakpoint(medium) {
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      > div {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        @include breakpoint(medium) {
+          flex-direction: column;
+          justify-content: baseline;
+        }
+
+        img {
+          width: 40px;
+
+          @include breakpoint(medium) {
+            width: 80px;
+          }
+        }
+
+        p {
+          font-size: 0.71rem;
+          color: hsl(var(--txt-clr));
+          font-weight: 600;
+
+          @include breakpoint(medium) {
+            text-align: center;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+
+    .discount__price {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+
+      > button {
+        padding: 0.3em 0.5em;
+
+        font-size: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+
+        background-color: transparent;
+        border: 2px solid hsl(var(--txt-clr));
+        border-radius: 0.3rem;
+        font-weight: 600;
+
+        transition: 0.1s ease-in-out;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
     }
   }
 }

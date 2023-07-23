@@ -42,6 +42,7 @@ const Header = () => {
       .then((response) => {
         if (response.data.Status === "success") {
           localStorage.removeItem("reciept_items");
+          navigate("/");
           window.location.reload();
         }
       })

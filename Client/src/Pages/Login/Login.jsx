@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import "./Login.scss";
 import axios from "axios";
-import { Route, useNavigate, Link } from "react-router-dom";
+import { Route, useNavigate, Link, useLocation } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { isAutorize, route } = useGlobalContext();
 
   const [loginState, setLoginState] = useState({
@@ -18,7 +18,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAutorize) {
-      navigate("/");
+      navigate(`${location.state?.prevURL || "/"}`);
     }
   }, [isAutorize]);
 
@@ -43,13 +43,12 @@ const Login = () => {
         if (response.data.Status === "success") {
           console.log("Logged  In");
 
-          navigate("/");
-
           setLoginState({
             email: "",
             password: "",
           });
 
+          navigate(`${location.state?.prevURL || "/"}`);
           window.location.reload();
         } else {
           setError(response.data.Message);
@@ -63,7 +62,13 @@ const Login = () => {
   return (
     <section className="login">
       <div>
-        <h2>Login</h2>
+        <header className="header__login">
+          <img
+            src="/logo.svg"
+            alt=""
+          />
+          <h2>Login</h2>
+        </header>
         <form
           className="login--form"
           onSubmit={handleSubmit}
@@ -122,7 +127,7 @@ const Login = () => {
         </form>
 
         <p className="signup__link">
-          Need an Account? <Link to='/register'>sign up</Link>
+          Need an Account? <Link to="/register">Sign Up</Link>
         </p>
       </div>
     </section>

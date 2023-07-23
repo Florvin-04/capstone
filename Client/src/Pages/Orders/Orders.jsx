@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./Orders.scss";
 import axios from "axios";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../AppContext/AppContext";
 import OrderProduct from "../../Components/OrderProduct/OrderProduct";
 import PageLoading from "../../Components/Loaders/PageLoading";
 import OrdersNavStatus from "../../Components/OrdersNavStatus/OrdersNavStatus";
 function Orders() {
-  // const { loggedInID, route } = useGlobalContext();
+  const { loggedInID, route, isAutorize } = useGlobalContext();
+  const navigate = useNavigate();
 
   // const [orders, setOrders] = useState();
 
@@ -45,6 +46,12 @@ function Orders() {
   //     </div>
   //   );
   // }
+  useEffect(() => {
+    if ((loggedInID == 0)) {
+      navigate("/404");
+    }
+    // console.log(!(loggedInID !== 0));
+  }, [loggedInID]);
 
   return (
     <div className="order__page container">
