@@ -81,6 +81,11 @@
         &--link {
           color: hsl(var(--txt-clr));
         }
+
+        .products-link.active {
+          // text-decoration: underline;
+          // font-weight: 600;
+        }
       }
     }
 
@@ -114,8 +119,6 @@
         clip-path: circle(141.2% at 100% 0);
         // clip-path: inset(0 0 0 0);
       }
-
- 
 
       &--info {
         font-size: 0.9rem;

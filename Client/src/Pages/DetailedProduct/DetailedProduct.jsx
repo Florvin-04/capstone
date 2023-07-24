@@ -135,7 +135,7 @@ const DetailedProduct = () => {
                   <div>
                     <p className="detailedProduct__info--category">{product.category}</p>
                     <p className="detailedProduct__info--title">{product.title}</p>
-                    <p>rate</p>
+                    {/* <p>rate</p> */}
                     <p className="detailedProduct__info--price">{toPHCurrency(product.price)}</p>
                     <p className="detailedProduct__info--description">{product.description}</p>
                   </div>

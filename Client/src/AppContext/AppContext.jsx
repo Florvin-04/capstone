@@ -26,7 +26,7 @@ export const AppProvider = ({ children }) => {
     first_name: "",
     last_name: "",
   });
-  const [loggedInID, setLoggedInID] = useState("");
+  const [loggedInID, setLoggedInID] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +60,7 @@ export const AppProvider = ({ children }) => {
       });
 
       if (response.data.Status === "Success") {
-        // console.log(JSON.stringify(response.data.Result));
+        // console.log(JSON.stringify(response.data.Result, null, 2));
         setProducts(response.data.Result);
       } else {
         console.log(response.data.Message);
@@ -99,6 +99,7 @@ export const AppProvider = ({ children }) => {
         setLoggedInID(response.data.id);
         setIsAuthorize(true);
       } else {
+        setLoggedInID(false);
         setIsAuthorize(false);
       }
     });
@@ -174,7 +175,7 @@ export const AppProvider = ({ children }) => {
     });
 
     const discount_by = total * 0.15;
-    return toPHCurrency(total - discount_by);
+    return toPHCurrency(total);
   }
 
   // function getTotal() {
@@ -201,7 +202,8 @@ export const AppProvider = ({ children }) => {
   function generateRandomProducts(category) {
     const shuffledProducts = products
       .filter((product) => product.category === category)
-      .sort(() => 0.5 - Math.random());
+      .sort((a, b) => b.id - a.id);
+    // .sort(() => 0.5 - Math.random());
     const selectedProducts = shuffledProducts.slice(0, 4);
     return selectedProducts;
   }

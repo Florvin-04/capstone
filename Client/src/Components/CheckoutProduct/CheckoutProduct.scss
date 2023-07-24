@@ -43,7 +43,7 @@
         // outline: 1px solid red;
         display: grid;
         // gap: 1rem;
-        width: min(25rem, 100%);
+        width: min(29rem, 100%);
         @include breakpoint("medium") {
           grid-template-columns: 1fr 1fr;
         }
@@ -97,7 +97,6 @@
           color: hsl(var(--accent-clr));
           font-weight: 600;
           letter-spacing: rem(1);
-          
         }
 
         .checkoutCard__description--quantity {

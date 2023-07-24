@@ -10,6 +10,12 @@ function Orders() {
   const { loggedInID, route, isAutorize } = useGlobalContext();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (loggedInID !== null && loggedInID === false) {
+      navigate("/404");
+    }
+  }, [loggedInID]);
+
   // const [orders, setOrders] = useState();
 
   // const [isLoading, setIsLoading] = useState(true);
@@ -46,17 +52,25 @@ function Orders() {
   //     </div>
   //   );
   // }
-  useEffect(() => {
-    // if (loggedInID == 0) {
-    //   navigate("/404");
-    // }
-    // console.log(loggedInID);
-  }, [loggedInID]);
+
+  // setTimeout(() => {
+  //   console.log(isAutorize);
+  // }, 2000);
+
+  // if (loggedInID == null) {
+  //   return <p>loading</p>;
+  // }
+  // useEffect(() => {
+  //   if (loggedInID == null) {
+  //     navigate("/404");
+  //   }
+  //   console.log(loggedInID);
+  // }, [loggedInID]);
 
   return (
     <div className="order__page container">
       <div>
-        <h2 className="page__title">My Orders</h2>
+        <h2 className="page__title">My Purchases</h2>
       </div>
       <OrdersNavStatus />
       <Outlet />

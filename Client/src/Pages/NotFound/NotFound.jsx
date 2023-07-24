@@ -1,5 +1,5 @@
-import React from "react";
 import { useEffect } from "react";
+import "./NotFound.scss";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function NotFound() {
@@ -13,7 +13,12 @@ function NotFound() {
     return () => clearTimeout(timer);
   }, []);
 
-  return <div>NotFound</div>;
+  return (
+    <div className="not-found-page">
+      <p>404</p>
+      <p>Page Not Found</p>
+    </div>
+  );
 }
 
 export default NotFound;

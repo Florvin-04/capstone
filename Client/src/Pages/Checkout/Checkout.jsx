@@ -219,7 +219,11 @@ const Checkout = () => {
     return Object.values(currentAddress).some((value) => value === "") ? "false" : "true";
   }
 
-  // console.log(hasCurrentAddress());
+  useEffect(() => {
+    if (loggedInID !== null && loggedInID === false) {
+      navigate("/404");
+    }
+  }, [loggedInID]);
 
   if (loading) {
     return (
@@ -229,7 +233,7 @@ const Checkout = () => {
     );
   }
 
-  console.log(chekedProduct.ids);
+  // console.log(chekedProduct.ids);
 
   return (
     <>
@@ -303,7 +307,7 @@ const Checkout = () => {
         )}
       </dialog>
 
-      <section className="checkout__section">
+      <section className="checkout__section container">
         <h2 className="page__title">Checkout</h2>
         {/* <div className="no-delivery-address"></div> */}
         {chekedProduct.ids.length > 0 ? (

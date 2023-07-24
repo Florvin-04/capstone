@@ -68,7 +68,7 @@ const Header = () => {
               <li className="navigation__list--item">
                 <NavLink
                   to="/products"
-                  className="navigation__list--link"
+                  className="navigation__list--link products-link"
                 >
                   Products
                 </NavLink>

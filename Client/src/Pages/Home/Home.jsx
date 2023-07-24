@@ -54,10 +54,10 @@ const Home = () => {
             </div>
             <div>
               <p className="hero__title">
-                Discover Your Signature Look: Shop With TrenEase Today
+                Discover Your Signature Look: Shop With TrendEase Today
               </p>
               <p className="hero__description">
-                Find the perfect outfit that speaks to your individuality. Explore TrenEase's diverse range of styles to create your one-of-a-kind fashion statement.
+                Find the perfect outfit that speaks to your individuality. Explore TrendEase's diverse range of styles to create your one-of-a-kind fashion statement.
               </p>
               <button
                 className="hero__button"
