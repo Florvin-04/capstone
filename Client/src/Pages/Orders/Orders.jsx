@@ -47,10 +47,10 @@ function Orders() {
   //   );
   // }
   useEffect(() => {
-    if ((loggedInID == 0)) {
-      navigate("/404");
-    }
-    // console.log(!(loggedInID !== 0));
+    // if (loggedInID == 0) {
+    //   navigate("/404");
+    // }
+    // console.log(loggedInID);
   }, [loggedInID]);
 
   return (

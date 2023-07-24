@@ -54,11 +54,10 @@ const Home = () => {
             </div>
             <div>
               <p className="hero__title">
-                Discover Your Signature Look: Shop [Clothing Store Name] Today
+                Discover Your Signature Look: Shop With TrenEase Today
               </p>
               <p className="hero__description">
-                Find the perfect outfit that speaks to your individuality. Explore [Clothing Store
-                Name]'s diverse range of styles to create your one-of-a-kind fashion statement.
+                Find the perfect outfit that speaks to your individuality. Explore TrenEase's diverse range of styles to create your one-of-a-kind fashion statement.
               </p>
               <button
                 className="hero__button"
@@ -70,7 +69,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="featured_products mens container">
+        <section className="featured_products womens container">
           <h2>Women's newly arrived product</h2>
           <div className="featured_product">
             {randomProducts.women.map((product) => {

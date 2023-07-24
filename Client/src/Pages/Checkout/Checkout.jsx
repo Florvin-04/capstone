@@ -202,8 +202,9 @@ const Checkout = () => {
           setTimeout(resolve, 2000);
         });
 
+        fetchCartData();
         navigate("/orders");
-        window.location.reload();
+        // window.location.reload();
 
         return;
       }

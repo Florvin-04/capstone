@@ -97,6 +97,7 @@ const Cart = () => {
       <footer className="cart__page--footer">
         {checkoutItems.checkout_cart.length !== 0 ? (
           <>
+            {/* <p>{getTotal()}</p> */}
             <p className="cart_total">Total: {getTotal()}</p>
             <button
               // disabled

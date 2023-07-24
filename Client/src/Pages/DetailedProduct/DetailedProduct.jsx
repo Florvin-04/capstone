@@ -8,7 +8,7 @@ import { BsCartPlus } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 
 const DetailedProduct = () => {
-  const { products, route, loggedInID, fetchCartData, toPHCurrency, isAutorize } =
+  const { products, route, loggedInID, fetchCartData, toPHCurrency, isAutorize, showCart } =
     useGlobalContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,7 +28,7 @@ const DetailedProduct = () => {
     setQuantity(Number(value));
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e, buy = "") {
     e.preventDefault();
 
     if (!isAutorize) {
@@ -46,8 +46,6 @@ const DetailedProduct = () => {
     await new Promise((resolve) => {
       setTimeout(resolve, 1000);
     });
-
-    console.log("submit");
 
     axios.defaults.withCredentials = true;
 
@@ -67,7 +65,9 @@ const DetailedProduct = () => {
     } catch (error) {
       console.log(err);
     }
-
+    if (buy == "buy") {
+      showCart();
+    }
     setIsLoading(false);
   }
 
@@ -220,6 +220,9 @@ const DetailedProduct = () => {
                         )}
                       </button>
                       <button
+                        onClick={(e) => {
+                          handleSubmit(e, "buy");
+                        }}
                         className="buyNow_btn"
                         disabled={isLoading}
                       >

@@ -20,6 +20,7 @@ export const AppProvider = ({ children }) => {
   const [cartData, setCartData] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [discount, setDiscount] = useState(0);
 
   const [loggedInName, setLoggedInName] = useState({
     first_name: "",
@@ -172,8 +173,20 @@ export const AppProvider = ({ children }) => {
       total += item.subtotal;
     });
 
-    return toPHCurrency(total);
+    const discount_by = total * 0.15;
+    return toPHCurrency(total - discount_by);
   }
+
+  // function getTotal() {
+  //   let total = 0;
+
+  //   checkoutItems.checkout_cart.forEach((item) => {
+  //     total += item.subtotal;
+  //   });
+
+  //   const discount_by = total * 0.15;
+  //   return toPHCurrency(total - discount_by);
+  // }
 
   function toPHCurrency(number) {
     const currencyOptions = {
